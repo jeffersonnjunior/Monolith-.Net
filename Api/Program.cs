@@ -1,3 +1,4 @@
+using Application.DependencyInjection;
 using Infrastructure.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +6,7 @@ IConfiguration configuration = builder.Configuration;
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.DependencyInjectionApplication(configuration);
 builder.Services.DependencyInjectionInfrastructure(configuration);
 
 var app = builder.Build();
