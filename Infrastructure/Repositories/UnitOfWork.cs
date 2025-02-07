@@ -1,15 +1,15 @@
-﻿using Infrastructure.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Infrastructure.Context;
+using Infrastructure.Interfaces;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Infrastructure.Repositories;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly DbContext _context;
+    private readonly AppDbContext _context;
     private IDbContextTransaction? _transaction;
 
-    public UnitOfWork(DbContext context)
+    public UnitOfWork(AppDbContext context)
     {
         _context = context;
     }

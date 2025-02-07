@@ -16,5 +16,7 @@ public static class AddInfrastructureDependencyInjection
             options.EnableDetailedErrors();
             options.EnableSensitiveDataLogging();
         });
+
+        services.RepositorysDependencyInjection();
     }
 }

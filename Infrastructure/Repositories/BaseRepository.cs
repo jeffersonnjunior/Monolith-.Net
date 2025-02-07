@@ -1,4 +1,5 @@
-﻿using Infrastructure.Interfaces;
+﻿using Infrastructure.Context;
+using Infrastructure.Interfaces;
 using Infrastructure.Utilities.Db;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -7,11 +8,11 @@ namespace Infrastructure.Repositories;
 
 public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
 {
-    protected readonly DbContext _context;
+    protected readonly AppDbContext _context;
     private readonly DbSet<TEntity> _dbSet;
     private readonly IUnitOfWork _unitOfWork;
 
-    public BaseRepository(DbContext context, IUnitOfWork unitOfWork)
+    public BaseRepository(AppDbContext context, IUnitOfWork unitOfWork)
     {
         _context = context;
         _dbSet = context.Set<TEntity>();
