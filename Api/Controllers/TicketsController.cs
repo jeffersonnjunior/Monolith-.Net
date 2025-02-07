@@ -1,12 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Controllers
+namespace Api.Controllers;
+
+public class TicketsController : Controller
 {
-    public class TicketsController : Controller
+    private readonly ITicketsService _ticketsService;
+
+    public TicketsController(ITicketsService ticketsService)
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+        _ticketsService = ticketsService;
     }
 }

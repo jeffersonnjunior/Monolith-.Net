@@ -1,5 +1,5 @@
 ﻿using Infrastructure.Interfaces;
-using Infrastructure.Utilities;
+using Infrastructure.Utilities.Db;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
