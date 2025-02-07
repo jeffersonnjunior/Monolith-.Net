@@ -9,5 +9,6 @@ public static class AddDependencyInjectionApplication
     public static void DependencyInjectionApplication(this IServiceCollection services, IConfiguration configuration)
     {
         services.ServicesDependencyInjection();
+        services.AutoMapperDependencyInjection();
     }
 }
