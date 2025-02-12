@@ -1,16 +1,27 @@
 ﻿using Application.Dtos;
-using Application.Interfaces;
-using Infrastructure.Interfaces;
+using Application.Interfaces.IServices;
+using Application.Specification;
+using AutoMapper;
+using Domain.Entities;
+using Infrastructure.Interfaces.IRepositories;
+using Infrastructure.Notifications;
 
 namespace Application.Services;
 
 public class TheaterLocationService : ITheaterLocationService
 {
     private readonly ITheaterLocationRepository _theaterLocationRepository;
+    private readonly IMapper _mapper;
+    private readonly NotificationContext _notifierContext;
+    private readonly TheaterLocationSpecification _specification;
 
-    public TheaterLocationService(ITheaterLocationRepository theaterLocationRepository)
+
+    public TheaterLocationService(ITheaterLocationRepository theaterLocationRepository, IMapper mapper, NotificationContext notifierContext)
     {
         _theaterLocationRepository = theaterLocationRepository;
+        _mapper = mapper;
+        _notifierContext = notifierContext;
+        _specification = new TheaterLocationSpecification(_notifierContext);
     }
 
     public TheaterLocationDto GetById(Guid id)
@@ -23,14 +34,29 @@ public class TheaterLocationService : ITheaterLocationService
     }
     public void Add(TheaterLocationDto theaterLocationDto)
     {
-        throw new NotImplementedException();
+        TheaterLocation theaterLocation = _mapper.Map<TheaterLocation>(theaterLocationDto);
+
+        _theaterLocationRepository.Add(theaterLocation);
     }
     public void Update(TheaterLocationDto theaterLocationDto)
     {
-        throw new NotImplementedException();
+        if(!_specification.IsSatisfiedBy(theaterLocationDto)) return;
+
+        TheaterLocation theaterLocation = _theaterLocationRepository.GetById(theaterLocationDto.Id);
+
+        if(_notifierContext.HasNotifications()) return;
+
+        _mapper.Map(theaterLocationDto, theaterLocation);
+
+        _theaterLocationRepository.Update(theaterLocation);
     }
-    public void Delete(TheaterLocationDto theaterLocationDto)
+
+    public void Delete(Guid id)
     {
-        throw new NotImplementedException();
+        TheaterLocation theaterLocation = _theaterLocationRepository.GetById(id);
+
+        if (theaterLocation == null) throw new Exception("Theater location not found.");
+
+        _theaterLocationRepository.Delete(theaterLocation);
     }
 }

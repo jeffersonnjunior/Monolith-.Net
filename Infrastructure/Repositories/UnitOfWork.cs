@@ -1,5 +1,5 @@
 ﻿using Infrastructure.Context;
-using Infrastructure.Interfaces;
+using Infrastructure.Interfaces.IRepositories;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Infrastructure.Repositories;
@@ -56,8 +56,8 @@ public class UnitOfWork : IUnitOfWork
 
     private void DisposeTransaction()
     {
-        _transaction.Dispose();
+        _transaction?.Dispose();
         _transaction = null;
-
     }
+
 }

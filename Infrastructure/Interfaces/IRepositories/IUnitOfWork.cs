@@ -1,6 +1,6 @@
-﻿namespace Infrastructure.Interfaces;
+﻿namespace Infrastructure.Interfaces.IRepositories;
 
-public interface IUnitOfWork: IDisposable
+public interface IUnitOfWork : IDisposable
 {
     int SaveChanges();
     void Rollback();

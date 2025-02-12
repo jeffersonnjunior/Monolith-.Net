@@ -18,5 +18,6 @@ public static class AddInfrastructureDependencyInjection
         });
 
         services.RepositorysDependencyInjection();
+        services.NotificationsDependencyInjection();
     }
 }

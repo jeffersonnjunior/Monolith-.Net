@@ -1,5 +1,5 @@
 ﻿using Infrastructure.Context;
-using Infrastructure.Interfaces;
+using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Utilities.Db;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -31,15 +31,15 @@ public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : 
     {
         _unitOfWork.BeginTransaction();
 
-        _dbSet.Add(obj);
+        _dbSet.Update(obj);
 
         _unitOfWork.Commit();
     }
-    public void Remove(TEntity obj)
+    public void Delete(TEntity obj)
     {
         _unitOfWork.BeginTransaction();
 
-        _dbSet.Add(obj);
+        _dbSet.Remove(obj);
 
         _unitOfWork.Commit();
     }
