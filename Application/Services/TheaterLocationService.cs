@@ -26,17 +26,27 @@ public class TheaterLocationService : ITheaterLocationService
 
     public TheaterLocationDto GetById(Guid id)
     {
-        throw new NotImplementedException();
+        TheaterLocation theaterLocation = _theaterLocationRepository.GetById(id);
+
+        if (_notifierContext.HasNotifications()) return null;
+
+        return _mapper.Map<TheaterLocationDto>(theaterLocation);
     }
     public List<TheaterLocationDto> GetFilter()
     {
         throw new NotImplementedException();
     }
-    public void Add(TheaterLocationDto theaterLocationDto)
+    public TheaterLocationDto Add(TheaterLocationDto theaterLocationDto)
     {
+        if (!_specification.IsSatisfiedBy(theaterLocationDto)) return theaterLocationDto;
+
         TheaterLocation theaterLocation = _mapper.Map<TheaterLocation>(theaterLocationDto);
 
+        _mapper.Map(theaterLocationDto, theaterLocation);
+
         _theaterLocationRepository.Add(theaterLocation);
+
+        return theaterLocationDto;
     }
     public void Update(TheaterLocationDto theaterLocationDto)
     {
@@ -55,7 +65,7 @@ public class TheaterLocationService : ITheaterLocationService
     {
         TheaterLocation theaterLocation = _theaterLocationRepository.GetById(id);
 
-        if (theaterLocation == null) throw new Exception("Theater location not found.");
+        if (_notifierContext.HasNotifications()) return;
 
         _theaterLocationRepository.Delete(theaterLocation);
     }

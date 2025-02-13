@@ -15,12 +15,21 @@ public class TheaterLocationController : Controller
         _theaterLocationService = theaterLocationService;
     }
 
+    [HttpGet]
+    [Route("getById")]
+    public IActionResult GetById(Guid id)
+    {
+        return Ok(_theaterLocationService.GetById(id));
+    }
+
     [HttpPost]
     [Route("add")]
     public IActionResult Post([FromBody] TheaterLocationDto theaterLocationDto)
     {
-        _theaterLocationService.Add(theaterLocationDto);
-        return Ok();
+        var createdLocation = _theaterLocationService.Add(theaterLocationDto);
+        var uri = Url.Action(nameof(GetById), new { id = createdLocation.Id });
+
+        return Created(uri, createdLocation);
     }
 
     [HttpPut]

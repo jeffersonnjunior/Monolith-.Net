@@ -2,56 +2,66 @@
 using Application.Interfaces.ISpecification;
 using Infrastructure.Notifications;
 
-namespace Application.Specification
+namespace Application.Specification;
+
+public class TheaterLocationSpecification : ISpecificationBase<TheaterLocationDto>
 {
-    public class TheaterLocationSpecification : ISpecificationBase<TheaterLocationDto>
+    private readonly NotificationContext _notificationContext;
+
+    public TheaterLocationSpecification(NotificationContext notificationContext)
     {
-        private readonly NotificationContext _notificationContext;
+        _notificationContext = notificationContext;
+    }
 
-        public TheaterLocationSpecification(NotificationContext notificationContext)
+    public bool IsSatisfiedBy(TheaterLocationDto theaterLocationDto)
+    {
+        bool isValid = true;
+
+        isValid &= IsStreetValid(theaterLocationDto);
+        isValid &= IsUnitNumberValid(theaterLocationDto);
+        isValid &= IsPostalCodeValid(theaterLocationDto);
+        isValid &= IsIdValid(theaterLocationDto);
+
+        return isValid; 
+    }
+
+    private bool IsIdValid(TheaterLocationDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.Id.ToString()))
         {
-            _notificationContext = notificationContext;
+            _notificationContext.AddNotification("O id não pode estar vazio.");
+            return false;
         }
+        return true;
+    }
 
-        public bool IsSatisfiedBy(TheaterLocationDto theaterLocationDto)
+    private bool IsStreetValid(TheaterLocationDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.Street))
         {
-            bool isValid = true;
-
-            isValid &= IsStreetValid(theaterLocationDto);
-            isValid &= IsUnitNumberValid(theaterLocationDto);
-            isValid &= IsPostalCodeValid(theaterLocationDto);
-
-            return isValid; 
+            _notificationContext.AddNotification("A rua não po+de estar vazia.");
+            return false;
         }
+        return true;
+    }
 
-        private bool IsStreetValid(TheaterLocationDto dto)
+    private bool IsUnitNumberValid(TheaterLocationDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.UnitNumber))
         {
-            if (string.IsNullOrWhiteSpace(dto.Street))
-            {
-                _notificationContext.AddNotification("A rua não pode estar vazia.");
-                return false;
-            }
-            return true;
+            _notificationContext.AddNotification("O número da unidade não pode estar vazio.");
+            return false;
         }
+        return true;
+    }
 
-        private bool IsUnitNumberValid(TheaterLocationDto dto)
+    private bool IsPostalCodeValid(TheaterLocationDto dto)
+    {
+        if (string.IsNullOrWhiteSpace(dto.PostalCode))
         {
-            if (string.IsNullOrWhiteSpace(dto.UnitNumber))
-            {
-                _notificationContext.AddNotification("O número da unidade não pode estar vazio.");
-                return false;
-            }
-            return true;
+            _notificationContext.AddNotification("O código postal não pode estar vazio.");
+            return false;
         }
-
-        private bool IsPostalCodeValid(TheaterLocationDto dto)
-        {
-            if (string.IsNullOrWhiteSpace(dto.PostalCode))
-            {
-                _notificationContext.AddNotification("O código postal não pode estar vazio.");
-                return false;
-            }
-            return true;
-        }
+        return true;
     }
 }
