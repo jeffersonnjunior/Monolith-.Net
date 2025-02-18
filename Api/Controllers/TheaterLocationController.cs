@@ -1,5 +1,6 @@
 ﻿using Application.Dtos;
 using Application.Interfaces.IServices;
+using Infrastructure.Utilities.FiltersModel;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
@@ -46,5 +47,13 @@ public class TheaterLocationController : Controller
     {
         _theaterLocationService.Delete(id);
         return Ok();
+    }
+
+    [HttpGet]
+    [Route("filter")]
+    public IActionResult GetByFilter([FromQuery] TheaterLocationFilter filter, [FromQuery] string[] includes)
+    {
+        var result = _theaterLocationService.GetFilter(filter, includes);
+        return Ok(result);
     }
 }

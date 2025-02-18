@@ -1,6 +1,4 @@
-﻿using Domain.Entities;
-
-namespace Application.Dtos;
+﻿namespace Application.Dtos;
 
 public class MovieTheatersDto
 {

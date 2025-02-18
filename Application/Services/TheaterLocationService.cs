@@ -5,6 +5,7 @@ using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
+using Infrastructure.Utilities.FiltersModel;
 
 namespace Application.Services;
 
@@ -32,9 +33,9 @@ public class TheaterLocationService : ITheaterLocationService
 
         return _mapper.Map<TheaterLocationDto>(theaterLocation);
     }
-    public List<TheaterLocationDto> GetFilter()
+    public ReturnTable<TheaterLocation> GetFilter(TheaterLocationFilter filter, string[] includes)
     {
-        throw new NotImplementedException();
+        return _theaterLocationRepository.GetFilter(filter, includes);
     }
     public TheaterLocationDto Add(TheaterLocationDto theaterLocationDto)
     {
