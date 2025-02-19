@@ -20,11 +20,13 @@ namespace Infrastructure.Repositories
             _unitOfWork = unitOfWork;
         }
 
-        public void Add(TEntity obj)
+
+        public TEntity Add(TEntity obj)
         {
             _unitOfWork.BeginTransaction();
             _dbSet.Add(obj);
             _unitOfWork.Commit();
+            return obj;
         }
 
         public void Update(TEntity obj)

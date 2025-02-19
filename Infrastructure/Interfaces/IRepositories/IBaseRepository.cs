@@ -4,7 +4,7 @@ namespace Infrastructure.Interfaces.IRepositories;
 
 public interface IBaseRepository<TEntity> : IDisposable where TEntity : class
 {
-    void Add(TEntity obj);
+    TEntity Add(TEntity obj);
     void Update(TEntity obj);
     void Delete(TEntity obj);
     IQueryable<TEntity> GetByExpression(Expression<Func<TEntity, bool>> expression, params string[] includes);

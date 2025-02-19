@@ -1,5 +1,6 @@
 ﻿using Application.Dtos;
 using Application.Interfaces.IServices;
+using Infrastructure.Notifications;
 using Infrastructure.Utilities.FiltersModel;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,37 +8,49 @@ namespace Api.Controllers;
 
 [Produces("application/json")]
 [Route("api/TheaterLocation")]
-
 public class TheaterLocationController : Controller
 {
     private readonly ITheaterLocationService _theaterLocationService;
-    public TheaterLocationController(ITheaterLocationService theaterLocationService)
+    private readonly NotificationContext _notificationContext;
+
+    public TheaterLocationController(ITheaterLocationService theaterLocationService, NotificationContext notificationContext)
     {
         _theaterLocationService = theaterLocationService;
+        _notificationContext = notificationContext;
     }
 
     [HttpGet]
-    [Route("getById")]
+    [Route("get-by-id")]
     public IActionResult GetById(Guid id)
     {
         return Ok(_theaterLocationService.GetById(id));
     }
 
+    [HttpGet]
+    [Route("get-filter")]
+    public IActionResult GetFilter([FromQuery] TheaterLocationFilter filter, [FromQuery] string[] includes)
+    {
+        var result = _theaterLocationService.GetFilter(filter, includes);
+        return Ok(result);
+    }
+
     [HttpPost]
     [Route("add")]
-    public IActionResult Post([FromBody] TheaterLocationDto theaterLocationDto)
+    public IActionResult Post([FromBody] TheaterLocationCreateDto theaterLocationCreateDto)
     {
-        var createdLocation = _theaterLocationService.Add(theaterLocationDto);
-        var uri = Url.Action(nameof(GetById), new { id = createdLocation.Id });
+        var createdLocation = _theaterLocationService.Add(theaterLocationCreateDto);
 
+        if (_notificationContext.HasNotifications()) return BadRequest(new { errors = _notificationContext.GetNotifications() });
+        
+        var uri = Url.Action(nameof(GetById), new { id = createdLocation.Id });
         return Created(uri, createdLocation);
     }
 
     [HttpPut]
     [Route("update")]
-    public IActionResult Update(TheaterLocationDto theaterLocationDto)
+    public IActionResult Update(TheaterLocationUpdateDto theaterLocationUpdateDto)
     {
-        _theaterLocationService.Update(theaterLocationDto);
+        _theaterLocationService.Update(theaterLocationUpdateDto);
         return Ok();
     }
 
@@ -47,13 +60,5 @@ public class TheaterLocationController : Controller
     {
         _theaterLocationService.Delete(id);
         return Ok();
-    }
-
-    [HttpGet]
-    [Route("filter")]
-    public IActionResult GetByFilter([FromQuery] TheaterLocationFilter filter, [FromQuery] string[] includes)
-    {
-        var result = _theaterLocationService.GetFilter(filter, includes);
-        return Ok(result);
     }
 }

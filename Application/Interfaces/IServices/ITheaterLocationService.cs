@@ -6,9 +6,9 @@ namespace Application.Interfaces.IServices;
 
 public interface ITheaterLocationService
 {
-    TheaterLocationDto GetById(Guid id);
+    TheaterLocationReadDto GetById(Guid id);
     ReturnTable<TheaterLocation> GetFilter(TheaterLocationFilter filter, string[] includes);
-    TheaterLocationDto Add(TheaterLocationDto theaterLocationDto);
-    void Update(TheaterLocationDto theaterLocationDto);
+    TheaterLocationReadDto Add(TheaterLocationCreateDto theaterLocationCreateDto);
+    void Update(TheaterLocationUpdateDto theaterLocationUpdateDto);
     void Delete(Guid id);
 }

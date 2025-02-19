@@ -6,6 +6,6 @@ public class MovieTheatersDto
     public required string Name { get; set; }
     public Guid AddressId { get; set; }
 
-    public virtual TheaterLocationDto TheaterLocation { get; set; }
+    public virtual TheaterLocationReadDto TheaterLocation { get; set; }
     public virtual ICollection<ScreensDto> Screens { get; set; }
 }

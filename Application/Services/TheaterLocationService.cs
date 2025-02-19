@@ -14,50 +14,51 @@ public class TheaterLocationService : ITheaterLocationService
     private readonly ITheaterLocationRepository _theaterLocationRepository;
     private readonly IMapper _mapper;
     private readonly NotificationContext _notifierContext;
-    private readonly TheaterLocationSpecification _specification;
-
+    private readonly TheaterLocationSpecification<TheaterLocationCreateDto> _createSpecification;
+    private readonly TheaterLocationSpecification<TheaterLocationUpdateDto> _updateSpecification;
 
     public TheaterLocationService(ITheaterLocationRepository theaterLocationRepository, IMapper mapper, NotificationContext notifierContext)
     {
         _theaterLocationRepository = theaterLocationRepository;
         _mapper = mapper;
         _notifierContext = notifierContext;
-        _specification = new TheaterLocationSpecification(_notifierContext);
+        _createSpecification = new TheaterLocationSpecification<TheaterLocationCreateDto>(_notifierContext);
+        _updateSpecification = new TheaterLocationSpecification<TheaterLocationUpdateDto>(_notifierContext);
     }
 
-    public TheaterLocationDto GetById(Guid id)
+    public TheaterLocationReadDto GetById(Guid id)
     {
-        TheaterLocation theaterLocation = _theaterLocationRepository.GetById(id);
-
-        if (_notifierContext.HasNotifications()) return null;
-
-        return _mapper.Map<TheaterLocationDto>(theaterLocation);
+        return _mapper.Map<TheaterLocationReadDto>(_theaterLocationRepository.GetById(id));
     }
+
     public ReturnTable<TheaterLocation> GetFilter(TheaterLocationFilter filter, string[] includes)
     {
         return _theaterLocationRepository.GetFilter(filter, includes);
     }
-    public TheaterLocationDto Add(TheaterLocationDto theaterLocationDto)
+
+    public TheaterLocationReadDto Add(TheaterLocationCreateDto theaterLocationCreateDto)
     {
-        if (!_specification.IsSatisfiedBy(theaterLocationDto)) return theaterLocationDto;
+        TheaterLocationReadDto theaterLocationReadDto = new();
 
-        TheaterLocation theaterLocation = _mapper.Map<TheaterLocation>(theaterLocationDto);
+        if (!_createSpecification.IsSatisfiedBy(theaterLocationCreateDto)) return theaterLocationReadDto;
 
-        _mapper.Map(theaterLocationDto, theaterLocation);
+        if (_theaterLocationRepository.GetExisting(theaterLocationCreateDto.Street) is not null) return theaterLocationReadDto;
 
-        _theaterLocationRepository.Add(theaterLocation);
+        TheaterLocation theaterLocation = _mapper.Map<TheaterLocation>(theaterLocationCreateDto);
+        theaterLocation = _theaterLocationRepository.Add(theaterLocation);
 
-        return theaterLocationDto;
+        return _mapper.Map(theaterLocation, theaterLocationReadDto);
     }
-    public void Update(TheaterLocationDto theaterLocationDto)
+
+    public void Update(TheaterLocationUpdateDto theaterLocationUpdateDto)
     {
-        if(!_specification.IsSatisfiedBy(theaterLocationDto)) return;
+        if (!_updateSpecification.IsSatisfiedBy(theaterLocationUpdateDto)) return;
 
-        TheaterLocation theaterLocation = _theaterLocationRepository.GetById(theaterLocationDto.Id);
+        var theaterLocation = _theaterLocationRepository.GetById(theaterLocationUpdateDto.Id);
 
-        if(_notifierContext.HasNotifications()) return;
-
-        _mapper.Map(theaterLocationDto, theaterLocation);
+        if (_notifierContext.HasNotifications()) return; 
+        
+        _mapper.Map(theaterLocationUpdateDto, theaterLocation);
 
         _theaterLocationRepository.Update(theaterLocation);
     }
