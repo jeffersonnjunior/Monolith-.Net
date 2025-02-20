@@ -5,8 +5,6 @@ namespace Infrastructure.Interfaces.IRepositories;
 
 public interface ITheaterLocationRepository : IBaseRepository<TheaterLocation>
 {
-    TheaterLocation GetById(Guid id);
-    TheaterLocation GetExisting(string street);
-    ReturnTable<TheaterLocation> GetFilter(TheaterLocationFilter filter, params string[] includes);
-
+    TheaterLocation GetById(FilterByItem filterByItem);
+    FilterReturn<TheaterLocation> GetFilter(FilterTheaterLocation filter, params string[] includes);
 }

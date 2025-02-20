@@ -17,25 +17,18 @@ public class TheaterLocationRepository : BaseRepository<TheaterLocation>, ITheat
         _notificationContext = notificationContext;
     }
 
-    public TheaterLocation GetById(Guid id)
+    public TheaterLocation GetById(FilterByItem filterByItem)
     {
-        TheaterLocation theaterLocation = GetElementByExpression(x => x.Id == id);
+        TheaterLocation theaterLocation = GetElementByParameter(filterByItem);
 
-        if (theaterLocation is null) _notificationContext.AddNotification("Endereço do cinema não registrado!");
+        if (filterByItem.Field == "Id" && theaterLocation is null) _notificationContext.AddNotification("Endereço do cinema não registrado!");
+
+        if (filterByItem.Field == "Street" && theaterLocation is not null) _notificationContext.AddNotification("Endereço já cadastrado!");
 
         return theaterLocation;
     }
 
-    public TheaterLocation GetExisting(string street)
-    {
-        TheaterLocation theaterLocation = GetElementByExpression(x => x.Street == street);
-
-        if (theaterLocation is not null) _notificationContext.AddNotification("Endereço já cadastrado!");
-
-        return theaterLocation;
-    }
-
-    public ReturnTable<TheaterLocation> GetFilter(TheaterLocationFilter filter, params string[] includes)
+    public FilterReturn<TheaterLocation> GetFilter(FilterTheaterLocation filter, params string[] includes)
     {
         var filters = new Dictionary<string, string>();
 
@@ -56,7 +49,7 @@ public class TheaterLocationRepository : BaseRepository<TheaterLocation>, ITheat
 
         var totalPages = (int)Math.Ceiling((double)totalRegisterFilter / filter.PageSize);
 
-        return new ReturnTable<TheaterLocation>
+        return new FilterReturn<TheaterLocation>
         {
             TotalRegister = totalRegister,
             TotalRegisterFilter = totalRegisterFilter,

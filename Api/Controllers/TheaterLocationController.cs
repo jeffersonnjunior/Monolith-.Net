@@ -28,7 +28,7 @@ public class TheaterLocationController : Controller
 
     [HttpGet]
     [Route("get-filter")]
-    public IActionResult GetFilter([FromQuery] TheaterLocationFilter filter, [FromQuery] string[] includes)
+    public IActionResult GetFilter([FromQuery] FilterTheaterLocation filter, [FromQuery] string[] includes)
     {
         var result = _theaterLocationService.GetFilter(filter, includes);
         return Ok(result);

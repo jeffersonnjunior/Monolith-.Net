@@ -1,13 +1,13 @@
 ﻿namespace Infrastructure.Utilities.FiltersModel;
 
-public class ReturnTable<T> where T : class
+public class FilterReturn<T> where T : class
 {
-    public ReturnTable()
+    public FilterReturn()
     {
         ItensList = new List<T>();
     }
 
-    public ReturnTable(int totalRegister, int totalRegisterFilter, int totalPages)
+    public FilterReturn(int totalRegister, int totalRegisterFilter, int totalPages)
     {
         TotalRegister = totalRegister;
         TotalRegisterFilter = totalRegisterFilter;

@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Context;
 using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Utilities.Db;
+using Infrastructure.Utilities.FiltersModel;
 using Infrastructure.Utilities.FunctionsDatabase;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
@@ -19,7 +20,6 @@ namespace Infrastructure.Repositories
             _dbSet = context.Set<TEntity>();
             _unitOfWork = unitOfWork;
         }
-
 
         public TEntity Add(TEntity obj)
         {
@@ -58,6 +58,21 @@ namespace Infrastructure.Repositories
         public TEntity GetElementByExpression(Expression<Func<TEntity, bool>> expression, params string[] includes)
         {
             return _dbSet.Includes(includes).AsNoTracking().FirstOrDefault(expression);
+        }
+
+        public TEntity GetElementByParameter(FilterByItem filterByItem)
+        {
+            var parameter = Expression.Parameter(typeof(TEntity), "x");
+            var member = Expression.Property(parameter, filterByItem.Field);
+            var constant = Expression.Constant(filterByItem.Value);
+            Expression body;
+
+            if (filterByItem.Key == "Equal") body = Expression.Equal(member, constant);
+
+            else body = Expression.NotEqual(member, constant);
+
+            var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameter);
+            return GetElementByExpression(lambda, filterByItem.Includes);
         }
 
         public IQueryable<TEntity> GetFilters(Dictionary<string, string> filters, params string[] includes)

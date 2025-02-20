@@ -28,10 +28,10 @@ public class TheaterLocationService : ITheaterLocationService
 
     public TheaterLocationReadDto GetById(Guid id)
     {
-        return _mapper.Map<TheaterLocationReadDto>(_theaterLocationRepository.GetById(id));
+        return _mapper.Map<TheaterLocationReadDto>(_theaterLocationRepository.GetById(new FilterByItem { Field = "Id", Value = id, Key = "Equal" }));
     }
 
-    public ReturnTable<TheaterLocation> GetFilter(TheaterLocationFilter filter, string[] includes)
+    public FilterReturn<TheaterLocation> GetFilter(FilterTheaterLocation filter, string[] includes)
     {
         return _theaterLocationRepository.GetFilter(filter, includes);
     }
@@ -42,7 +42,7 @@ public class TheaterLocationService : ITheaterLocationService
 
         if (!_createSpecification.IsSatisfiedBy(theaterLocationCreateDto)) return theaterLocationReadDto;
 
-        if (_theaterLocationRepository.GetExisting(theaterLocationCreateDto.Street) is not null) return theaterLocationReadDto;
+        if (_theaterLocationRepository.GetById(new FilterByItem { Field = "Street", Value = theaterLocationCreateDto.Street, Key = "Equal" }) is not null) return theaterLocationReadDto;
 
         TheaterLocation theaterLocation = _mapper.Map<TheaterLocation>(theaterLocationCreateDto);
         theaterLocation = _theaterLocationRepository.Add(theaterLocation);
@@ -54,7 +54,7 @@ public class TheaterLocationService : ITheaterLocationService
     {
         if (!_updateSpecification.IsSatisfiedBy(theaterLocationUpdateDto)) return;
 
-        var theaterLocation = _theaterLocationRepository.GetById(theaterLocationUpdateDto.Id);
+        var theaterLocation = _theaterLocationRepository.GetById(new FilterByItem {Field = "Id", Value = theaterLocationUpdateDto.Id, Key = "Equal"});
 
         if (_notifierContext.HasNotifications()) return; 
         
@@ -65,7 +65,7 @@ public class TheaterLocationService : ITheaterLocationService
 
     public void Delete(Guid id)
     {
-        TheaterLocation theaterLocation = _theaterLocationRepository.GetById(id);
+        TheaterLocation theaterLocation = _theaterLocationRepository.GetById(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
 
         if (_notifierContext.HasNotifications()) return;
 
