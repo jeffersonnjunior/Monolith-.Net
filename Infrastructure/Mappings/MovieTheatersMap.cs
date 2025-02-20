@@ -14,12 +14,12 @@ public class MovieTheatersMap : IEntityTypeConfiguration<MovieTheaters>
             .IsRequired()
             .HasMaxLength(150);
 
-        builder.Property(mt => mt.AddressId)
+        builder.Property(mt => mt.TheaterLocationId)
             .IsRequired();
 
         builder.HasOne(mt => mt.TheaterLocation)
             .WithOne()
-            .HasForeignKey<MovieTheaters>(mt => mt.AddressId);
+            .HasForeignKey<MovieTheaters>(mt => mt.TheaterLocationId);
 
         builder.HasMany(mt => mt.Screens)
             .WithOne(s => s.MovieTheater)
