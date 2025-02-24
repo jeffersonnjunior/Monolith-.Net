@@ -30,8 +30,7 @@ public class TheaterLocationController : Controller
     [Route("get-filter")]
     public IActionResult GetFilter([FromQuery] FilterTheaterLocation filter)
     {
-        var result = _theaterLocationService.GetFilter(filter);
-        return Ok(result);
+        return Ok(_theaterLocationService.GetFilter(filter));
     }
 
     [HttpPost]
