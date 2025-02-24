@@ -1,43 +1,61 @@
 ﻿using System.Linq.Expressions;
+using Infrastructure.Utilities.FiltersModel;
 
 namespace Infrastructure.Utilities.FunctionsDatabase;
 
 public static class QueryableExtensions
 {
-    public static IQueryable<T> ApplyDynamicFilters<T>(this IQueryable<T> query, Dictionary<string, string> filters, int pageSize = 10, int pageNumber = 1)
+    public static FilterReturn<T> ApplyDynamicFilters<T>(this IQueryable<T> query, Dictionary<string, string> filters, int pageSize, int pageNumber) where T : class
     {
-        if (filters == null || !filters.Any())
-            return ApplyPagination(query, pageSize, pageNumber);
+        IQueryable<T> paginatedQuery;
+        int totalItems;
 
-        var parameter = Expression.Parameter(typeof(T), "x");
-        Expression combined = null;
-
-        foreach (var filter in filters)
+        if (filters is null || !filters.Any())
         {
-            if (string.IsNullOrEmpty(filter.Value))
-                continue;
+            totalItems = query.Count();
+            paginatedQuery = ApplyPagination(query, pageSize, pageNumber);
+        }
+        else
+        {
+            var parameter = Expression.Parameter(typeof(T), "x");
+            Expression combined = null;
 
-            var propertyName = filter.Key.EndsWith("Contains") ? filter.Key.Replace("Contains", "") : filter.Key;
-            var member = Expression.Property(parameter, propertyName);
-            var constant = Expression.Constant(filter.Value);
-
-            Expression body = member.Type switch
+            foreach (var filter in filters)
             {
-                Type t when t == typeof(string) => BuildStringContainsExpression(member, constant),
-                Type t when t == typeof(int) || t == typeof(double) || t == typeof(decimal) => BuildNumericEqualsExpression(member, constant),
-                _ => throw new NotSupportedException($"The type '{member.Type}' is not supported for dynamic filtering.")
-            };
+                if (string.IsNullOrEmpty(filter.Value))
+                    continue;
 
-            combined = combined == null ? body : Expression.AndAlso(combined, body);
+                var propertyName = filter.Key.EndsWith("Contains") ? filter.Key.Replace("Contains", "") : filter.Key;
+                var member = Expression.Property(parameter, propertyName);
+                var constant = Expression.Constant(filter.Value);
+
+                Expression body = member.Type switch
+                {
+                    Type t when t == typeof(string) => BuildStringContainsExpression(member, constant),
+                    Type t when t == typeof(int) || t == typeof(double) || t == typeof(decimal) => BuildNumericEqualsExpression(member, constant),
+                    _ => throw new NotSupportedException($"The type '{member.Type}' is not supported for dynamic filtering.")
+                };
+
+                combined = combined == null ? body : Expression.AndAlso(combined, body);
+            }
+
+            if (combined is not null)
+            {
+                var lambda = Expression.Lambda<Func<T, bool>>(combined, parameter);
+                query = query.Where(lambda);
+            }
+
+            totalItems = query.Count();
+            paginatedQuery = ApplyPagination(query, pageSize, pageNumber);
         }
 
-        if (combined != null)
+        return new FilterReturn<T>
         {
-            var lambda = Expression.Lambda<Func<T, bool>>(combined, parameter);
-            query = query.Where(lambda);
-        }
-
-        return ApplyPagination(query, pageSize, pageNumber);
+            TotalRegister = totalItems,
+            TotalRegisterFilter = totalItems,
+            TotalPages = (int)Math.Ceiling((double)totalItems / pageSize),
+            ItensList = paginatedQuery.ToList()
+        };
     }
 
     private static Expression BuildStringContainsExpression(MemberExpression member, ConstantExpression constant)

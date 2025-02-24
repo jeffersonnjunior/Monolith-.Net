@@ -11,5 +11,6 @@ public interface IBaseRepository<TEntity> : IDisposable where TEntity : class
     IQueryable<TEntity> GetByExpression(Expression<Func<TEntity, bool>> expression, params string[] includes);
     TEntity GetElementByExpression(Expression<Func<TEntity, bool>> expression, params string[] includes);
     TEntity GetElementByParameter(FilterByItem filterByItem);
-    IQueryable<TEntity> GetFilters(Dictionary<string, string> filters, params string[] includes);
+
+    FilterReturn<TEntity> GetFilters(Dictionary<string, string> filters, int pageSize, int pageNumber, params string[] includes);
 }

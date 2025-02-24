@@ -28,7 +28,7 @@ public class TheaterLocationRepository : BaseRepository<TheaterLocation>, ITheat
         return theaterLocation;
     }
 
-    public FilterReturn<TheaterLocation> GetFilter(FilterTheaterLocation filter, params string[] includes)
+    public FilterReturn<TheaterLocation> GetFilter(FilterTheaterLocation filter)
     {
         var filters = new Dictionary<string, string>();
 
@@ -41,20 +41,8 @@ public class TheaterLocationRepository : BaseRepository<TheaterLocation>, ITheat
         if (!string.IsNullOrEmpty(filter.PostalCodeContains))
             filters.Add(nameof(filter.PostalCodeContains), filter.PostalCodeContains);
 
-        var query = GetFilters(filters, includes);
-        var totalRegister = _dbSet.Count();
-        var totalRegisterFilter = query.Count();
+        var result = GetFilters(filters, filter.PageSize, filter.PageNumber, filter.Includes);
 
-        var paginatedList = query.ApplyDynamicFilters(filters, filter.PageSize, filter.PageNumber).ToList();
-
-        var totalPages = (int)Math.Ceiling((double)totalRegisterFilter / filter.PageSize);
-
-        return new FilterReturn<TheaterLocation>
-        {
-            TotalRegister = totalRegister,
-            TotalRegisterFilter = totalRegisterFilter,
-            TotalPages = totalPages,
-            ItensList = paginatedList
-        };
+        return result;
     }
 }

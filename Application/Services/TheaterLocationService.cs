@@ -31,9 +31,9 @@ public class TheaterLocationService : ITheaterLocationService
         return _mapper.Map<TheaterLocationReadDto>(_theaterLocationRepository.GetById(new FilterByItem { Field = "Id", Value = id, Key = "Equal" }));
     }
 
-    public FilterReturn<TheaterLocation> GetFilter(FilterTheaterLocation filter, string[] includes)
+    public FilterReturn<TheaterLocation> GetFilter(FilterTheaterLocation filter)
     {
-        return _theaterLocationRepository.GetFilter(filter, includes);
+        return _theaterLocationRepository.GetFilter(filter);
     }
 
     public TheaterLocationReadDto Add(TheaterLocationCreateDto theaterLocationCreateDto)

@@ -75,16 +75,16 @@ namespace Infrastructure.Repositories
             return GetElementByExpression(lambda, filterByItem.Includes);
         }
 
-        public IQueryable<TEntity> GetFilters(Dictionary<string, string> filters, params string[] includes)
+        public FilterReturn<TEntity> GetFilters(Dictionary<string, string> filters, int pageSize, int pageNumber, params string[] includes)
         {
             IQueryable<TEntity> query = _dbSet;
 
-            if (includes != null)
+            if (includes is not null)
             {
                 query = includes.Aggregate(query, (current, include) => current.Include(include));
             }
 
-            return query.ApplyDynamicFilters(filters);
+            return query.ApplyDynamicFilters(filters, pageSize, pageNumber);
         }
 
         public void Dispose()
