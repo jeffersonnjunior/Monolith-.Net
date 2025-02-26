@@ -5,6 +5,8 @@ using Infrastructure.Utilities.FiltersModel;
 using Infrastructure.Utilities.FunctionsDatabase;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Reflection;
+using Infrastructure.Notifications;
 
 namespace Infrastructure.Repositories
 {
@@ -13,12 +15,14 @@ namespace Infrastructure.Repositories
         protected readonly AppDbContext _context;
         protected readonly DbSet<TEntity> _dbSet;
         protected readonly IUnitOfWork _unitOfWork;
+        private readonly NotificationContext _notificationContext;
 
-        public BaseRepository(AppDbContext context, IUnitOfWork unitOfWork)
+        public BaseRepository(AppDbContext context, IUnitOfWork unitOfWork, NotificationContext notificationContext)
         {
             _context = context;
             _dbSet = context.Set<TEntity>();
             _unitOfWork = unitOfWork;
+            _notificationContext = notificationContext;
         }
 
         public TEntity Add(TEntity obj)
@@ -60,8 +64,10 @@ namespace Infrastructure.Repositories
             return _dbSet.Includes(includes).AsNoTracking().FirstOrDefault(expression);
         }
 
-        public TEntity GetElementByParameter(FilterByItem filterByItem)
+        public TEntity GetElementEqual(FilterByItem filterByItem)
         {
+            if(!ValidadeIncludes(filterByItem.Includes)) return null;
+            
             var parameter = Expression.Parameter(typeof(TEntity), "x");
             var member = Expression.Property(parameter, filterByItem.Field);
             var constant = Expression.Constant(filterByItem.Value);
@@ -74,17 +80,39 @@ namespace Infrastructure.Repositories
             var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameter);
             return GetElementByExpression(lambda, filterByItem.Includes);
         }
-
+        
         public FilterReturn<TEntity> GetFilters(Dictionary<string, string> filters, int pageSize, int pageNumber, params string[] includes)
         {
             IQueryable<TEntity> query = _dbSet;
 
-            if (includes is not null)
+            if (includes is not null && !ValidadeIncludes(includes))
             {
                 query = includes.Aggregate(query, (current, include) => current.Include(include));
+                return null;
             }
 
             return query.ApplyDynamicFilters(filters, pageSize, pageNumber);
+        }
+
+        public bool ValidadeIncludes(string[] includes)
+        {
+            foreach (var include in includes)
+            {
+                var properties = include.Split('.');
+                var type = typeof(TEntity);
+
+                foreach (var property in properties)
+                {
+                    var propertyInfo = type.GetProperty(property, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+                    if (propertyInfo is null)
+                    {
+                        _notificationContext.AddNotification($"Não é valido esse: {include}");
+                        return false;
+                    }
+                    type = propertyInfo.PropertyType;
+                }
+            }
+            return true;
         }
 
         public void Dispose()
