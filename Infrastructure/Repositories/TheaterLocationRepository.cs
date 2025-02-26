@@ -12,14 +12,14 @@ namespace Infrastructure.Repositories;
 public class TheaterLocationRepository : BaseRepository<TheaterLocation>, ITheaterLocationRepository
 {
     private readonly NotificationContext _notificationContext;
-    public TheaterLocationRepository(AppDbContext context, IUnitOfWork unitOfWork, NotificationContext notificationContext) : base(context, unitOfWork)
+    public TheaterLocationRepository(AppDbContext context, IUnitOfWork unitOfWork, NotificationContext notificationContext) : base(context, unitOfWork, notificationContext)
     {
         _notificationContext = notificationContext;
     }
 
-    public TheaterLocation GetById(FilterByItem filterByItem)
+    public TheaterLocation GetByElement(FilterByItem filterByItem)
     {
-        TheaterLocation theaterLocation = GetElementByParameter(filterByItem);
+        TheaterLocation theaterLocation = GetElementEqual(filterByItem);
 
         if (filterByItem.Field == "Id" && theaterLocation is null) _notificationContext.AddNotification("Endereço do cinema não registrado!");
 
@@ -28,7 +28,7 @@ public class TheaterLocationRepository : BaseRepository<TheaterLocation>, ITheat
         return theaterLocation;
     }
 
-    public FilterReturn<TheaterLocation> GetFilter(FilterTheaterLocation filter)
+    public FilterReturn<TheaterLocation> GetFilter(FilterTheaterLocationTable filter)
     {
         var filters = new Dictionary<string, string>();
 

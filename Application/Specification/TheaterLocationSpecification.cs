@@ -26,24 +26,24 @@ public class TheaterLocationSpecification<T> : ISpecificationBase<T>
     private bool ValidateCreateDto(TheaterLocationCreateDto dto)
     {
         bool isValid = true;
-        isValid &= IsStreetValid(dto.Street, true);
-        isValid &= IsUnitNumberValid(dto.UnitNumber, true);
-        isValid &= IsPostalCodeValid(dto.PostalCode, true);
+        isValid &= IsStreetValid(dto.Street);
+        isValid &= IsUnitNumberValid(dto.UnitNumber);
+        isValid &= IsPostalCodeValid(dto.PostalCode);
         return isValid;
     }
 
     private bool ValidateUpdateDto(TheaterLocationUpdateDto dto)
     {
         bool isValid = true;
-        isValid &= IsStreetValid(dto.Street, false);
-        isValid &= IsUnitNumberValid(dto.UnitNumber, false);
-        isValid &= IsPostalCodeValid(dto.PostalCode, false);
+        isValid &= IsStreetValid(dto.Street);
+        isValid &= IsUnitNumberValid(dto.UnitNumber);
+        isValid &= IsPostalCodeValid(dto.PostalCode);
         return isValid;
     }
 
-    private bool IsStreetValid(string? street, bool isRequired)
+    private bool IsStreetValid(string street)
     {
-        if (isRequired && string.IsNullOrWhiteSpace(street))
+        if (string.IsNullOrWhiteSpace(street))
         {
             _notificationContext.AddNotification("A rua não pode estar vazia.");
             return false;
@@ -51,9 +51,9 @@ public class TheaterLocationSpecification<T> : ISpecificationBase<T>
         return true;
     }
 
-    private bool IsUnitNumberValid(string? unitNumber, bool isRequired)
+    private bool IsUnitNumberValid(string unitNumber)
     {
-        if (isRequired && string.IsNullOrWhiteSpace(unitNumber))
+        if (string.IsNullOrWhiteSpace(unitNumber))
         {
             _notificationContext.AddNotification("O número da unidade não pode estar vazio");
             return false;
@@ -61,9 +61,9 @@ public class TheaterLocationSpecification<T> : ISpecificationBase<T>
         return true;
     }
 
-    private bool IsPostalCodeValid(string? postalCode, bool isRequired)
+    private bool IsPostalCodeValid(string postalCode)
     {
-        if (isRequired && string.IsNullOrWhiteSpace(postalCode))
+        if (string.IsNullOrWhiteSpace(postalCode))
         {
             _notificationContext.AddNotification("O código postal não pode estar vazio.");
             return false;

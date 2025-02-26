@@ -5,6 +5,6 @@ namespace Infrastructure.Interfaces.IRepositories;
 
 public interface ITheaterLocationRepository : IBaseRepository<TheaterLocation>
 {
-    TheaterLocation GetById(FilterByItem filterByItem);
-    FilterReturn<TheaterLocation> GetFilter(FilterTheaterLocation filter);
+    TheaterLocation GetByElement(FilterByItem filterByItem);
+    FilterReturn<TheaterLocation> GetFilter(FilterTheaterLocationTable filter);
 }

@@ -21,14 +21,14 @@ public class TheaterLocationController : Controller
 
     [HttpGet]
     [Route("get-by-id")]
-    public IActionResult GetById(Guid id)
+    public IActionResult GetById(FilterTheaterLocationById filterTheaterLocationById)
     {
-        return Ok(_theaterLocationService.GetById(id));
+        return Ok(_theaterLocationService.GetById(filterTheaterLocationById));
     }
 
     [HttpGet]
     [Route("get-filter")]
-    public IActionResult GetFilter([FromQuery] FilterTheaterLocation filter)
+    public IActionResult GetFilter([FromQuery] FilterTheaterLocationTable filter)
     {
         return Ok(_theaterLocationService.GetFilter(filter));
     }

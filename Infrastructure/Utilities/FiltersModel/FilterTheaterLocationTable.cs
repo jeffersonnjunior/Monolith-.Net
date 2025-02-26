@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.Utilities.FiltersModel;
 
-public class FilterTheaterLocation
+public class FilterTheaterLocationTable
 {
     public string? StreetContains { get; set; }
     public string? UnitNumberContains { get; set; }
