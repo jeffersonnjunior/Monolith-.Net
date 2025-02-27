@@ -19,8 +19,10 @@ public class TheaterLocationRepository : BaseRepository<TheaterLocation>, ITheat
 
     public TheaterLocation GetByElement(FilterByItem filterByItem)
     {
-        TheaterLocation theaterLocation = GetElementEqual(filterByItem);
+        (TheaterLocation theaterLocation, bool validadeIncludes) = GetElementEqual(filterByItem);
 
+        if (!validadeIncludes) return theaterLocation;
+        
         if (filterByItem.Field == "Id" && theaterLocation is null) _notificationContext.AddNotification("Endereço do cinema não registrado!");
 
         if (filterByItem.Field == "Street" && theaterLocation is not null) _notificationContext.AddNotification("Endereço já cadastrado!");
@@ -41,8 +43,8 @@ public class TheaterLocationRepository : BaseRepository<TheaterLocation>, ITheat
         if (!string.IsNullOrEmpty(filter.PostalCodeContains))
             filters.Add(nameof(filter.PostalCodeContains), filter.PostalCodeContains);
 
-        var result = GetFilters(filters, filter.PageSize, filter.PageNumber, filter.Includes);
-
+        (var result, bool validadeIncludes) = GetFilters(filters, filter.PageSize, filter.PageNumber, filter.Includes);
+        
         return result;
     }
 }

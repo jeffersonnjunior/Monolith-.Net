@@ -10,7 +10,9 @@ public class ProfileConfigurationMap : Profile
     {
         CreateMap<CustomerDetails, CustomerDetailsDto>().ReverseMap();
         CreateMap<Films, FilmsDto>().ReverseMap();
-        CreateMap<MovieTheaters, MovieTheatersDto>().ReverseMap();
+        CreateMap<MovieTheaters, MovieTheatersCreateDto>().ReverseMap();
+        CreateMap<MovieTheaters, MovieTheatersReadDto>().ReverseMap();
+        CreateMap<MovieTheaters, MovieTheatersUpdateDto>().ReverseMap();
         CreateMap<Screens, ScreensDto>().ReverseMap();
         CreateMap<Seats, SeatsDto>().ReverseMap();
         CreateMap<Sessions, SessionsDto>().ReverseMap();

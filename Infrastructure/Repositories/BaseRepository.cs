@@ -64,9 +64,9 @@ namespace Infrastructure.Repositories
             return _dbSet.Includes(includes).AsNoTracking().FirstOrDefault(expression);
         }
 
-        public TEntity GetElementEqual(FilterByItem filterByItem)
+        public (TEntity, bool) GetElementEqual(FilterByItem filterByItem)
         {
-            if(!ValidadeIncludes(filterByItem.Includes)) return null;
+            if(!ValidadeIncludes(filterByItem.Includes)) return (null, true);
             
             var parameter = Expression.Parameter(typeof(TEntity), "x");
             var member = Expression.Property(parameter, filterByItem.Field);
@@ -78,20 +78,20 @@ namespace Infrastructure.Repositories
             else body = Expression.NotEqual(member, constant);
 
             var lambda = Expression.Lambda<Func<TEntity, bool>>(body, parameter);
-            return GetElementByExpression(lambda, filterByItem.Includes);
+            return (GetElementByExpression(lambda, filterByItem.Includes), false);
         }
         
-        public FilterReturn<TEntity> GetFilters(Dictionary<string, string> filters, int pageSize, int pageNumber, params string[] includes)
+        public (FilterReturn<TEntity>, bool) GetFilters(Dictionary<string, string> filters, int pageSize, int pageNumber, params string[] includes)
         {
             IQueryable<TEntity> query = _dbSet;
 
-            if (includes is not null && !ValidadeIncludes(includes))
+            if (includes is not null && ValidadeIncludes(includes))
             {
                 query = includes.Aggregate(query, (current, include) => current.Include(include));
-                return null;
+                return (null, true);
             }
 
-            return query.ApplyDynamicFilters(filters, pageSize, pageNumber);
+            return (query.ApplyDynamicFilters(filters, pageSize, pageNumber), false);
         }
 
         public bool ValidadeIncludes(string[] includes)
@@ -106,7 +106,7 @@ namespace Infrastructure.Repositories
                     var propertyInfo = type.GetProperty(property, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
                     if (propertyInfo is null)
                     {
-                        _notificationContext.AddNotification($"Não é valido esse: {include}");
+                        _notificationContext.AddNotification($"Não é valido esse include: {include}");
                         return false;
                     }
                     type = propertyInfo.PropertyType;

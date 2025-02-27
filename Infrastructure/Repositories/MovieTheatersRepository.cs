@@ -19,11 +19,28 @@ public class MovieTheatersRepository : BaseRepository<MovieTheaters>, IMovieThea
     
     public MovieTheaters GetByElement(FilterByItem filterByItem)
     {
-        MovieTheaters movieTheaters = GetElementEqual(filterByItem);
+        (MovieTheaters movieTheaters, bool validadeIncludes) = GetElementEqual(filterByItem);
+
+        if (validadeIncludes) return movieTheaters;
         
         if (filterByItem.Field == "Id" && movieTheaters is null) _notificationContext.AddNotification("Cinema não registrado!");
         
         return movieTheaters;
+    }
+    
+    public FilterReturn<MovieTheaters> GetFilter(FilterMovieTheatersTable filter)
+    {
+        var filters = new Dictionary<string, string>();
+
+        if (!string.IsNullOrEmpty(filter.Name))
+            filters.Add(nameof(filter.Name), filter.Name);
+
+        if (!string.IsNullOrEmpty(filter.TheaterLocationId.ToString()))
+            filters.Add(nameof(filter.TheaterLocationId), filter.TheaterLocationId.ToString());
+
+        (var result, bool validadeIncludes) = GetFilters(filters, filter.PageSize, filter.PageNumber, filter.Includes);
+        
+        return result;
     }
     
     public bool ValidateInput(object dto, bool isUpdate, MovieTheaters existingMovieTheater = null)

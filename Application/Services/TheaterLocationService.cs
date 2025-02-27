@@ -32,9 +32,16 @@ public class TheaterLocationService : ITheaterLocationService
         
     }
 
-    public FilterReturn<TheaterLocation> GetFilter(FilterTheaterLocationTable filter)
+    public FilterReturn<TheaterLocationReadDto> GetFilter(FilterTheaterLocationTable filter)
     {
-        return _theaterLocationRepository.GetFilter(filter);
+        var filterResult = _theaterLocationRepository.GetFilter(filter);
+        return new FilterReturn<TheaterLocationReadDto>
+        {
+            TotalRegister = filterResult.TotalRegister,
+            TotalRegisterFilter = filterResult.TotalRegisterFilter,
+            TotalPages = filterResult.TotalPages,
+            ItensList = _mapper.Map<IEnumerable<TheaterLocationReadDto>>(filterResult.ItensList)
+        };
     }
 
     public TheaterLocationReadDto Add(TheaterLocationCreateDto theaterLocationCreateDto)
