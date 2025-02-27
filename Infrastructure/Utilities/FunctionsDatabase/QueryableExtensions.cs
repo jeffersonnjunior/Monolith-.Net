@@ -33,6 +33,7 @@ public static class QueryableExtensions
                 {
                     Type t when t == typeof(string) => BuildStringContainsExpression(member, constant),
                     Type t when t == typeof(int) || t == typeof(double) || t == typeof(decimal) => BuildNumericEqualsExpression(member, constant),
+                    Type t when t == typeof(Guid) => BuildGuidEqualsExpression(member, constant),
                     _ => throw new NotSupportedException($"The type '{member.Type}' is not supported for dynamic filtering.")
                 };
 
@@ -58,6 +59,12 @@ public static class QueryableExtensions
         };
     }
 
+    private static Expression BuildGuidEqualsExpression(MemberExpression member, ConstantExpression constant)
+    {
+        var guidValue = Guid.Parse((string)constant.Value);
+        var guidConstant = Expression.Constant(guidValue);
+        return Expression.Equal(member, guidConstant);
+    }
     private static Expression BuildStringContainsExpression(MemberExpression member, ConstantExpression constant)
     {
         var containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });

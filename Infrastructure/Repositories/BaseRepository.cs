@@ -85,10 +85,11 @@ namespace Infrastructure.Repositories
         {
             IQueryable<TEntity> query = _dbSet;
 
-            if (includes is not null && ValidadeIncludes(includes))
+            if (includes is not null)
             {
-                query = includes.Aggregate(query, (current, include) => current.Include(include));
-                return (null, true);
+                if (ValidadeIncludes(includes)) query = includes.Aggregate(query, (current, include) => current.Include(include));
+                
+                else return (null, true);
             }
 
             return (query.ApplyDynamicFilters(filters, pageSize, pageNumber), false);

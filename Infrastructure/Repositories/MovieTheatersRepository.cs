@@ -35,11 +35,11 @@ public class MovieTheatersRepository : BaseRepository<MovieTheaters>, IMovieThea
         if (!string.IsNullOrEmpty(filter.Name))
             filters.Add(nameof(filter.Name), filter.Name);
 
-        if (!string.IsNullOrEmpty(filter.TheaterLocationId.ToString()))
-            filters.Add(nameof(filter.TheaterLocationId), filter.TheaterLocationId.ToString());
+        if (filter.TheaterLocationId.HasValue)
+            filters.Add(nameof(filter.TheaterLocationId), filter.TheaterLocationId.Value.ToString());
 
         (var result, bool validadeIncludes) = GetFilters(filters, filter.PageSize, filter.PageNumber, filter.Includes);
-        
+    
         return result;
     }
     
