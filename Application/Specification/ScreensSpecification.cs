@@ -20,6 +20,7 @@ public class ScreensSpecification<T> : ISpecificationBase<T>
     {
         if (dto is ScreensCreateDto createDto) return ValidateCreateDto(createDto);
         else if (dto is ScreensUpdateDto updateDto) return ValidateUpdateDto(updateDto);
+        else if (dto is FilterScreensById filterScreensById) return ValidateFilterScreensById(filterScreensById);
         else return false;
     }
 
@@ -39,6 +40,15 @@ public class ScreensSpecification<T> : ISpecificationBase<T>
         isValid &= IsSeatingCapacityValid(dto.SeatingCapacity);
         return isValid;
     }
+
+    private bool ValidateFilterScreensById(FilterScreensById filterScreensById)
+    {
+        bool isValid = true;
+        isValid &= IsIdValid(filterScreensById.Id);
+        isValid &= IncludesValid(filterScreensById.Includes);
+        return isValid;
+    }
+
     private bool IsIdValid(Guid id)
     {
         if (id == Guid.Empty)
@@ -53,7 +63,7 @@ public class ScreensSpecification<T> : ISpecificationBase<T>
     {
         if (string.IsNullOrWhiteSpace(screenNumber))
         {
-            _notificationContext.AddNotification("O número da tela não pode estar vazio.");
+            _notificationContext.AddNotification("O número da sala não pode estar vazio.");
             return false;
         }
         return true;
@@ -66,6 +76,22 @@ public class ScreensSpecification<T> : ISpecificationBase<T>
             _notificationContext.AddNotification("A capacidade de assentos deve ser maior que zero.");
             return false;
         }
+        return true;
+    }
+    private bool IncludesValid(IEnumerable<string> includes)
+    {
+        var validProperties = typeof(ScreensReadDto).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .Select(p => p.Name)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+    
+        var invalidIncludes = includes.Where(include => !validProperties.Contains(include)).ToList();
+    
+        if (invalidIncludes.Any())
+        {
+            _notificationContext.AddNotification($"Esses Includes ({string.Join(", ", invalidIncludes)}) não são válidos.");
+            return false;
+        }
+    
         return true;
     }
 }

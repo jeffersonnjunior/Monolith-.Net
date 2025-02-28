@@ -16,6 +16,7 @@ public class ScreensService : IScreensService
     private readonly NotificationContext _notificationContext;
     private readonly ScreensSpecification<ScreensCreateDto> _createSpecification;
     private readonly ScreensSpecification<ScreensUpdateDto> _updateSpecification;
+    private readonly ScreensSpecification<FilterScreensById> _filterScreensByIdSpecification;
 
     public ScreensService(IScreensRepository screensRepository, IMapper mapper, NotificationContext notificationContext)
     {
@@ -24,11 +25,16 @@ public class ScreensService : IScreensService
         _notificationContext = notificationContext;
         _createSpecification = new ScreensSpecification<ScreensCreateDto>(_notificationContext);
         _updateSpecification = new ScreensSpecification<ScreensUpdateDto>(_notificationContext);
+        _filterScreensByIdSpecification = new ScreensSpecification<FilterScreensById>(_notificationContext);
     }
 
     public ScreensReadDto GetById(FilterScreensById filterScreensById)
     {
-        return _mapper.Map<ScreensReadDto>(_screensRepository.GetByElement(new FilterByItem { Field = "Id", Value = filterScreensById.Id, Key = "Equal", Includes = filterScreensById.Includes }));
+        ScreensReadDto screensReadDto = null;
+
+        if (!_filterScreensByIdSpecification.IsSatisfiedBy(filterScreensById)) return screensReadDto;
+        
+        return _mapper.Map(_screensRepository.GetByElement(new FilterByItem { Field = "Id", Value = filterScreensById.Id, Key = "Equal", Includes = filterScreensById.Includes }), screensReadDto);
     }
     
     public FilterReturn<ScreensReadDto> GetFilter(FilterScreensTable filter)
