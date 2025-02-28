@@ -29,7 +29,6 @@ public class TheaterLocationService : ITheaterLocationService
     public TheaterLocationReadDto GetById(FilterTheaterLocationById filterTheaterLocationById)
     {
         return _mapper.Map<TheaterLocationReadDto>(_theaterLocationRepository.GetByElement(new FilterByItem { Field = "Id", Value = filterTheaterLocationById.Id, Key = "Equal", Includes = filterTheaterLocationById.Includes }));
-        
     }
 
     public FilterReturn<TheaterLocationReadDto> GetFilter(FilterTheaterLocationTable filter)
@@ -44,18 +43,18 @@ public class TheaterLocationService : ITheaterLocationService
         };
     }
 
-    public TheaterLocationReadDto Add(TheaterLocationCreateDto theaterLocationCreateDto)
+    public TheaterLocationUpdateDto Add(TheaterLocationCreateDto theaterLocationCreateDto)
     {
-        TheaterLocationReadDto theaterLocationReadDto = new();
+        TheaterLocationUpdateDto theaterLocationUpdateDto = null;
 
-        if (!_createSpecification.IsSatisfiedBy(theaterLocationCreateDto)) return theaterLocationReadDto;
+        if (!_createSpecification.IsSatisfiedBy(theaterLocationCreateDto)) return theaterLocationUpdateDto;
 
-        if (_theaterLocationRepository.GetByElement(new FilterByItem { Field = "Street", Value = theaterLocationCreateDto.Street, Key = "Equal" }) is not null) return theaterLocationReadDto;
+        if (_theaterLocationRepository.GetByElement(new FilterByItem { Field = "Street", Value = theaterLocationCreateDto.Street, Key = "Equal" }) is not null) return theaterLocationUpdateDto;
 
         TheaterLocation theaterLocation = _mapper.Map<TheaterLocation>(theaterLocationCreateDto);
         theaterLocation = _theaterLocationRepository.Add(theaterLocation);
 
-        return _mapper.Map(theaterLocation, theaterLocationReadDto);
+        return _mapper.Map(theaterLocation, theaterLocationUpdateDto);
     }
 
     public void Update(TheaterLocationUpdateDto theaterLocationUpdateDto)

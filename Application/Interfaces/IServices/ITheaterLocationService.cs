@@ -8,7 +8,7 @@ public interface ITheaterLocationService
 {
     TheaterLocationReadDto GetById(FilterTheaterLocationById filterTheaterLocationById);
     FilterReturn<TheaterLocationReadDto> GetFilter(FilterTheaterLocationTable filter);
-    TheaterLocationReadDto Add(TheaterLocationCreateDto theaterLocationCreateDto);
+    TheaterLocationUpdateDto Add(TheaterLocationCreateDto theaterLocationCreateDto);
     void Update(TheaterLocationUpdateDto theaterLocationUpdateDto);
     void Delete(Guid id);
 }

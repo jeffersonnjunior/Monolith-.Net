@@ -20,10 +20,6 @@ public class ScreensMap : IEntityTypeConfiguration<Screens>
         builder.Property(s => s.MovieTheaterId)
             .IsRequired();
 
-        builder.HasOne(s => s.MovieTheater)
-            .WithMany(mt => mt.Screens)
-            .HasForeignKey(s => s.MovieTheaterId);
-
         builder.HasMany(s => s.Seats)
             .WithOne(seat => seat.Screen)
             .HasForeignKey(seat => seat.ScreenId);

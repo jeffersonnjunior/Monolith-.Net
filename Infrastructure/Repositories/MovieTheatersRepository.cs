@@ -32,11 +32,11 @@ public class MovieTheatersRepository : BaseRepository<MovieTheaters>, IMovieThea
     {
         var filters = new Dictionary<string, string>();
 
-        if (!string.IsNullOrEmpty(filter.Name))
-            filters.Add(nameof(filter.Name), filter.Name);
+        if (!string.IsNullOrEmpty(filter.NameContains))
+            filters.Add(nameof(filter.NameContains), filter.NameContains);
 
-        if (filter.TheaterLocationId.HasValue)
-            filters.Add(nameof(filter.TheaterLocationId), filter.TheaterLocationId.Value.ToString());
+        if (filter.TheaterLocationIdEqual.HasValue)
+            filters.Add(nameof(filter.TheaterLocationIdEqual), filter.TheaterLocationIdEqual.Value.ToString());
 
         (var result, bool validadeIncludes) = GetFilters(filters, filter.PageSize, filter.PageNumber, filter.Includes);
     

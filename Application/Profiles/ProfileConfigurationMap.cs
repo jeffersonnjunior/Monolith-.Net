@@ -13,7 +13,9 @@ public class ProfileConfigurationMap : Profile
         CreateMap<MovieTheaters, MovieTheatersCreateDto>().ReverseMap();
         CreateMap<MovieTheaters, MovieTheatersReadDto>().ReverseMap();
         CreateMap<MovieTheaters, MovieTheatersUpdateDto>().ReverseMap();
-        CreateMap<Screens, ScreensDto>().ReverseMap();
+        CreateMap<Screens, ScreensCreateDto>().ReverseMap();
+        CreateMap<Screens, ScreensReadDto>().ReverseMap();
+        CreateMap<Screens, ScreensUpdateDto>().ReverseMap();
         CreateMap<Seats, SeatsDto>().ReverseMap();
         CreateMap<Sessions, SessionsDto>().ReverseMap();
         CreateMap<TheaterLocation, TheaterLocationCreateDto>().ReverseMap();
