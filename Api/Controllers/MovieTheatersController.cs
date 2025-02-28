@@ -22,7 +22,7 @@ public class MovieTheatersController : Controller
     
     [HttpGet]
     [Route("get-by-id")]
-    public IActionResult GetById(FilterMovieTheatersById filterMovieTheatersById)
+    public IActionResult GetById([FromQuery] FilterMovieTheatersById filterMovieTheatersById)
     {
         return Ok(_movieTheatersService.GetById(filterMovieTheatersById));
     }
@@ -36,7 +36,7 @@ public class MovieTheatersController : Controller
 
     [HttpPost]
     [Route("add")]
-    public IActionResult Post(MovieTheatersCreateDto movieTheatersCreateDto)
+    public IActionResult Post([FromBody] MovieTheatersCreateDto movieTheatersCreateDto)
     {
         var createdTheaterLocation = _movieTheatersService.Add(movieTheatersCreateDto);
         
@@ -48,14 +48,14 @@ public class MovieTheatersController : Controller
     
     [HttpPut]
     [Route("update")]
-    public IActionResult Update(MovieTheatersUpdateDto movieTheatersUpdateDto)
+    public IActionResult Update([FromBody] MovieTheatersUpdateDto movieTheatersUpdateDto)
     {
         _movieTheatersService.Update(movieTheatersUpdateDto);
         return Ok();
     }
     
     [HttpDelete]
-    [Route("delete")]
+    [Route("{id}")]
     public IActionResult Delete(Guid id)
     {
         _movieTheatersService.Delete(id);

@@ -21,7 +21,7 @@ public class TheaterLocationController : Controller
 
     [HttpGet]
     [Route("get-by-id")]
-    public IActionResult GetById(FilterTheaterLocationById filterTheaterLocationById)
+    public IActionResult GetById([FromQuery] FilterTheaterLocationById filterTheaterLocationById)
     {
         return Ok(_theaterLocationService.GetById(filterTheaterLocationById));
     }
@@ -47,14 +47,14 @@ public class TheaterLocationController : Controller
 
     [HttpPut]
     [Route("update")]
-    public IActionResult Update(TheaterLocationUpdateDto theaterLocationUpdateDto)
+    public IActionResult Update([FromBody] TheaterLocationUpdateDto theaterLocationUpdateDto)
     {
         _theaterLocationService.Update(theaterLocationUpdateDto);
         return Ok();
     }
-
+    
     [HttpDelete]
-    [Route("delete")]
+    [Route("{id}")]
     public IActionResult Delete(Guid id)
     {
         _theaterLocationService.Delete(id);

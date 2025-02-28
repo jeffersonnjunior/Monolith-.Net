@@ -21,7 +21,7 @@ public class ScreensController : Controller
 
     [HttpGet]
     [Route("get-by-id")]
-    public IActionResult GetById(FilterScreensById filterScreensById)
+    public IActionResult GetById([FromQuery] FilterScreensById filterScreensById)
     {
         return Ok(_screensService.GetById(filterScreensById));
     }
@@ -35,7 +35,7 @@ public class ScreensController : Controller
     
     [HttpPost]
     [Route("add")]
-    public IActionResult Add(ScreensCreateDto screensCreateDto)
+    public IActionResult Add([FromBody] ScreensCreateDto screensCreateDto)
     {
         var createdScreens = _screensService.Add(screensCreateDto);
         
@@ -47,14 +47,14 @@ public class ScreensController : Controller
 
     [HttpPost]
     [Route("update")]
-    public IActionResult Update(ScreensUpdateDto screensUpdateDto)
+    public IActionResult Update([FromQuery] ScreensUpdateDto screensUpdateDto)
     {
         _screensService.Update(screensUpdateDto);
         return Ok();
     }
     
     [HttpDelete]
-    [Route("delete")]
+    [Route("{id}")]
     public IActionResult Delete(Guid id)
     {
         _screensService.Delete(id);
