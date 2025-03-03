@@ -14,16 +14,14 @@ public class TheaterLocationService : ITheaterLocationService
     private readonly ITheaterLocationRepository _theaterLocationRepository;
     private readonly IMapper _mapper;
     private readonly NotificationContext _notifierContext;
-    private readonly TheaterLocationSpecification<TheaterLocationCreateDto> _createSpecification;
-    private readonly TheaterLocationSpecification<TheaterLocationUpdateDto> _updateSpecification;
+    private readonly TheaterLocationSpecification _theaterLocationSpecification;
 
     public TheaterLocationService(ITheaterLocationRepository theaterLocationRepository, IMapper mapper, NotificationContext notifierContext)
     {
         _theaterLocationRepository = theaterLocationRepository;
         _mapper = mapper;
         _notifierContext = notifierContext;
-        _createSpecification = new TheaterLocationSpecification<TheaterLocationCreateDto>(_notifierContext);
-        _updateSpecification = new TheaterLocationSpecification<TheaterLocationUpdateDto>(_notifierContext);
+        _theaterLocationSpecification = new TheaterLocationSpecification(notifierContext);
     }
 
     public TheaterLocationReadDto GetById(FilterTheaterLocationById filterTheaterLocationById)
@@ -47,7 +45,7 @@ public class TheaterLocationService : ITheaterLocationService
     {
         TheaterLocationUpdateDto theaterLocationUpdateDto = null;
 
-        if (!_createSpecification.IsSatisfiedBy(theaterLocationCreateDto)) return theaterLocationUpdateDto;
+        if (!_theaterLocationSpecification.IsSatisfiedBy(theaterLocationCreateDto)) return theaterLocationUpdateDto;
 
         if (_theaterLocationRepository.GetByElement(new FilterByItem { Field = "Street", Value = theaterLocationCreateDto.Street, Key = "Equal" }) is not null) return theaterLocationUpdateDto;
 
@@ -59,7 +57,7 @@ public class TheaterLocationService : ITheaterLocationService
 
     public void Update(TheaterLocationUpdateDto theaterLocationUpdateDto)
     {
-        if (!_updateSpecification.IsSatisfiedBy(theaterLocationUpdateDto)) return;
+        if (!_theaterLocationSpecification.IsSatisfiedBy(theaterLocationUpdateDto)) return;
 
         var theaterLocation = _theaterLocationRepository.GetByElement(new FilterByItem {Field = "Id", Value = theaterLocationUpdateDto.Id, Key = "Equal"});
 

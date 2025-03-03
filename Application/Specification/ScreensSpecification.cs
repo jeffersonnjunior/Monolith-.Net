@@ -1,13 +1,11 @@
 using Application.Dtos;
-using Application.Interfaces.ISpecification;
 using Infrastructure.Notifications;
 using System.Reflection;
 using Infrastructure.Utilities.FiltersModel;
 
 namespace Application.Specification;
 
-public class ScreensSpecification<T> : ISpecificationBase<T>
-    where T : class
+public class ScreensSpecification
 {
     private readonly NotificationContext _notificationContext;
 
@@ -16,7 +14,7 @@ public class ScreensSpecification<T> : ISpecificationBase<T>
         _notificationContext = notificationContext;
     }
 
-    public bool IsSatisfiedBy(T dto)
+    public bool IsSatisfiedBy(object dto)
     {
         if (dto is ScreensCreateDto createDto) return ValidateCreateDto(createDto);
         else if (dto is ScreensUpdateDto updateDto) return ValidateUpdateDto(updateDto);

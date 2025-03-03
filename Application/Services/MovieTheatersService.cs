@@ -14,16 +14,13 @@ public class MovieTheatersService : IMovieTheatersService
     private readonly IMovieTheatersRepository _movieTheatersRepository;
     private readonly IMapper _mapper;
     private readonly NotificationContext _notifierContext;
-    private readonly MovieTheatersSpecification<MovieTheatersCreateDto> _createSpecification;
-    private readonly MovieTheatersSpecification<MovieTheatersUpdateDto> _updateSpecification;
-
+    private readonly MovieTheatersSpecification  _movieTheatersSpecification;
     public MovieTheatersService(IMovieTheatersRepository movieTheatersRepository, IMapper mapper, NotificationContext notifierContext )
     {
         _movieTheatersRepository = movieTheatersRepository;
         _mapper = mapper;
         _notifierContext = notifierContext;
-        _createSpecification = new MovieTheatersSpecification<MovieTheatersCreateDto>(_notifierContext);
-        _updateSpecification = new MovieTheatersSpecification<MovieTheatersUpdateDto>(_notifierContext);
+        _movieTheatersSpecification = new MovieTheatersSpecification(notifierContext);
     }
 
     public MovieTheatersReadDto GetById(FilterMovieTheatersById filterMovieTheatersById)
@@ -47,7 +44,7 @@ public class MovieTheatersService : IMovieTheatersService
     {
         MovieTheatersUpdateDto movieTheatersUpdateDto = null;
     
-        if (!_createSpecification.IsSatisfiedBy(movieTheatersCreateDto)) return movieTheatersUpdateDto;
+        if (!_movieTheatersSpecification.IsSatisfiedBy(movieTheatersCreateDto)) return movieTheatersUpdateDto;
     
         if(!_movieTheatersRepository.ValidateInput(movieTheatersCreateDto, false)) return movieTheatersUpdateDto;
     
@@ -59,7 +56,7 @@ public class MovieTheatersService : IMovieTheatersService
     
     public void Update(MovieTheatersUpdateDto movieTheatersUpdateDto)
     {
-        if (!_updateSpecification.IsSatisfiedBy(movieTheatersUpdateDto)) return;
+        if (!_movieTheatersSpecification.IsSatisfiedBy(movieTheatersUpdateDto)) return;
 
         var existingMovieTheater = _movieTheatersRepository.GetByElement(new FilterByItem { Field = "Id", Value = movieTheatersUpdateDto.Id, Key = "Equal" });
 

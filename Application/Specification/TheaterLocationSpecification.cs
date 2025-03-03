@@ -1,11 +1,9 @@
 ﻿using Application.Dtos;
-using Application.Interfaces.ISpecification;
 using Infrastructure.Notifications;
 
 namespace Application.Specification;
 
-public class TheaterLocationSpecification<T> : ISpecificationBase<T>
-    where T : class
+public class TheaterLocationSpecification
 {
     private readonly NotificationContext _notificationContext;
     public TheaterLocationSpecification(NotificationContext notificationContext)
@@ -13,12 +11,10 @@ public class TheaterLocationSpecification<T> : ISpecificationBase<T>
         _notificationContext = notificationContext;
     }
 
-    public bool IsSatisfiedBy(T dto)
+    public bool IsSatisfiedBy(object dto)
     {
         if (dto is TheaterLocationCreateDto createDto) return ValidateCreateDto(createDto);
-        
         else if (dto is TheaterLocationUpdateDto updateDto) return ValidateUpdateDto(updateDto);
-        
         else return false;
         
     }

@@ -14,25 +14,21 @@ public class ScreensService : IScreensService
     private readonly IScreensRepository _screensRepository;
     private readonly IMapper _mapper;
     private readonly NotificationContext _notificationContext;
-    private readonly ScreensSpecification<ScreensCreateDto> _createSpecification;
-    private readonly ScreensSpecification<ScreensUpdateDto> _updateSpecification;
-    private readonly ScreensSpecification<FilterScreensById> _filterScreensByIdSpecification;
+    private readonly ScreensSpecification _screensSpecification;
 
     public ScreensService(IScreensRepository screensRepository, IMapper mapper, NotificationContext notificationContext)
     {
         _screensRepository = screensRepository;
         _mapper = mapper;
         _notificationContext = notificationContext;
-        _createSpecification = new ScreensSpecification<ScreensCreateDto>(_notificationContext);
-        _updateSpecification = new ScreensSpecification<ScreensUpdateDto>(_notificationContext);
-        _filterScreensByIdSpecification = new ScreensSpecification<FilterScreensById>(_notificationContext);
+        _screensSpecification = new ScreensSpecification(notificationContext);
     }
 
     public ScreensReadDto GetById(FilterScreensById filterScreensById)
     {
         ScreensReadDto screensReadDto = null;
 
-        if (!_filterScreensByIdSpecification.IsSatisfiedBy(filterScreensById)) return screensReadDto;
+        if (!_screensSpecification.IsSatisfiedBy(filterScreensById)) return screensReadDto;
         
         return _mapper.Map(_screensRepository.GetByElement(new FilterByItem { Field = "Id", Value = filterScreensById.Id, Key = "Equal", Includes = filterScreensById.Includes }), screensReadDto);
     }
@@ -53,7 +49,7 @@ public class ScreensService : IScreensService
     {
         ScreensUpdateDto screensUpdateDto = null;
         
-        if (!_createSpecification.IsSatisfiedBy(screensCreateDto)) return screensUpdateDto;
+        if (!_screensSpecification.IsSatisfiedBy(screensCreateDto)) return screensUpdateDto;
         
         if(!_screensRepository.ValidateInput(screensCreateDto, false)) return screensUpdateDto;
 
@@ -65,7 +61,7 @@ public class ScreensService : IScreensService
     
     public void Update(ScreensUpdateDto screensUpdateDto)
     {
-        if (!_updateSpecification.IsSatisfiedBy(screensUpdateDto)) return;
+        if (!_screensSpecification.IsSatisfiedBy(screensUpdateDto)) return;
         
         var existingScreens = _screensRepository.GetByElement(new FilterByItem { Field = "Id", Value = screensUpdateDto.Id, Key = "Equal" });
         
