@@ -66,10 +66,7 @@ namespace Infrastructure.Repositories
 
         public (TEntity, bool) GetElementEqual(FilterByItem filterByItem)
         {
-            if (filterByItem.Includes != null && !ValidadeIncludes(filterByItem.Includes))
-            {
-                return (null, true);
-            }
+            if (filterByItem.Includes != null && !ValidadeIncludes(filterByItem.Includes)) return (null, true);
 
             var parameter = Expression.Parameter(typeof(TEntity), "x");
             var member = Expression.Property(parameter, filterByItem.Field);

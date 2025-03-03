@@ -7,5 +7,5 @@ public class ScreensReadDto
     public int SeatingCapacity { get; set; }
     public required Guid MovieTheaterId { get; set; }
     
-    public virtual ICollection<SeatsDto> Seats { get; set; }
+    public virtual ICollection<SeatsReadDto> Seats { get; set; }
 }

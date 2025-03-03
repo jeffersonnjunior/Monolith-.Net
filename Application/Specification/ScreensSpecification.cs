@@ -80,18 +80,23 @@ public class ScreensSpecification<T> : ISpecificationBase<T>
     }
     private bool IncludesValid(IEnumerable<string> includes)
     {
+        if (includes == null || !includes.Any())
+        {
+            return true;
+        }
+
         var validProperties = typeof(ScreensReadDto).GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Select(p => p.Name)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
-    
+
         var invalidIncludes = includes.Where(include => !validProperties.Contains(include)).ToList();
-    
+
         if (invalidIncludes.Any())
         {
             _notificationContext.AddNotification($"Esses Includes ({string.Join(", ", invalidIncludes)}) não são válidos.");
             return false;
         }
-    
+
         return true;
     }
 }

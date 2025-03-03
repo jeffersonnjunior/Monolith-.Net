@@ -8,6 +8,6 @@ public class TicketsDto
     public Guid ClientId { get; set; }
 
     public virtual SessionsDto Session { get; set; }
-    public virtual SeatsDto Seat { get; set; }
+    public virtual SeatsReadDto SeatRead { get; set; }
     public virtual CustomerDetailsDto CustomerDetails { get; set; }
 }
