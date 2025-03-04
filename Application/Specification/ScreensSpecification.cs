@@ -16,38 +16,41 @@ public class ScreensSpecification
 
     public bool IsSatisfiedBy(object dto)
     {
-        if (dto is ScreensCreateDto createDto) return ValidateCreateDto(createDto);
-        else if (dto is ScreensUpdateDto updateDto) return ValidateUpdateDto(updateDto);
-        else if (dto is FilterScreensById filterScreensById) return ValidateFilterScreensById(filterScreensById);
-        else return false;
+        return dto switch
+        {
+            ScreensCreateDto createDto => ValidateCreateDto(createDto),
+            ScreensUpdateDto updateDto => ValidateUpdateDto(updateDto),
+            FilterScreensById filterScreensById => ValidateFilterScreensById(filterScreensById),
+            _ => false
+        };
     }
 
     private bool ValidateCreateDto(ScreensCreateDto dto)
     {
         bool isValid = true;
-        isValid &= IsScreenNumberValid(dto.ScreenNumber);
-        isValid &= IsSeatingCapacityValid(dto.SeatingCapacity);
+        isValid &= ValidateScreenNumber(dto.ScreenNumber);
+        isValid &= ValidateSeatingCapacity(dto.SeatingCapacity);
         return isValid;
     }
 
     private bool ValidateUpdateDto(ScreensUpdateDto dto)
     {
         bool isValid = true;
-        isValid &= IsIdValid(dto.Id);
-        isValid &= IsScreenNumberValid(dto.ScreenNumber);
-        isValid &= IsSeatingCapacityValid(dto.SeatingCapacity);
+        isValid &= ValidateId(dto.Id);
+        isValid &= ValidateScreenNumber(dto.ScreenNumber);
+        isValid &= ValidateSeatingCapacity(dto.SeatingCapacity);
         return isValid;
     }
 
     private bool ValidateFilterScreensById(FilterScreensById filterScreensById)
     {
         bool isValid = true;
-        isValid &= IsIdValid(filterScreensById.Id);
-        isValid &= IncludesValid(filterScreensById.Includes);
+        isValid &= ValidateId(filterScreensById.Id);
+        isValid &= ValidateIncludes(filterScreensById.Includes);
         return isValid;
     }
 
-    private bool IsIdValid(Guid id)
+    private bool ValidateId(Guid id)
     {
         if (id == Guid.Empty)
         {
@@ -57,26 +60,7 @@ public class ScreensSpecification
         return true;
     }
 
-    private bool IsScreenNumberValid(string screenNumber)
-    {
-        if (string.IsNullOrWhiteSpace(screenNumber))
-        {
-            _notificationContext.AddNotification("O número da sala não pode estar vazio.");
-            return false;
-        }
-        return true;
-    }
-
-    private bool IsSeatingCapacityValid(int seatingCapacity)
-    {
-        if (seatingCapacity <= 0)
-        {
-            _notificationContext.AddNotification("A capacidade de assentos deve ser maior que zero.");
-            return false;
-        }
-        return true;
-    }
-    private bool IncludesValid(IEnumerable<string> includes)
+    private bool ValidateIncludes(IEnumerable<string> includes)
     {
         if (includes == null || !includes.Any())
         {
@@ -95,6 +79,26 @@ public class ScreensSpecification
             return false;
         }
 
+        return true;
+    }
+    
+    private bool ValidateScreenNumber(string screenNumber)
+    {
+        if (string.IsNullOrWhiteSpace(screenNumber))
+        {
+            _notificationContext.AddNotification("O número da sala não pode estar vazio.");
+            return false;
+        }
+        return true;
+    }
+
+    private bool ValidateSeatingCapacity(int seatingCapacity)
+    {
+        if (seatingCapacity <= 0)
+        {
+            _notificationContext.AddNotification("A capacidade de assentos deve ser maior que zero.");
+            return false;
+        }
         return true;
     }
 }

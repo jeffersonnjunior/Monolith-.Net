@@ -14,27 +14,30 @@ public class MovieTheatersSpecification
 
     public bool IsSatisfiedBy(object dto)
     {
-        if (dto is MovieTheatersCreateDto createDto) return ValidateCreateDto(createDto);
-        else if (dto is MovieTheatersUpdateDto updateDto) return ValidateUpdateDto(updateDto);
-        else return false;
+        return dto switch
+        {
+            MovieTheatersCreateDto createDto => ValidateCreateDto(createDto),
+            MovieTheatersUpdateDto updateDto => ValidateUpdateDto(updateDto),
+            _ => false
+        };
     }
 
     private bool ValidateCreateDto(MovieTheatersCreateDto dto)
     {
         bool isValid = true;
-        isValid &= IsNameValid(dto.Name);
-        isValid &= IsAddressIdValid(dto.TheaterLocationId);
+        isValid &= ValidateName(dto.Name);
+        isValid &= ValidateAddressId(dto.TheaterLocationId);
         return isValid;
     }
 
     private bool ValidateUpdateDto(MovieTheatersUpdateDto dto)
     {
         bool isValid = true;
-        isValid &= IsNameValid(dto.Name);
-        isValid &= IsAddressIdValid(dto.TheaterLocationId);
+        isValid &= ValidateName(dto.Name);
+        isValid &= ValidateAddressId(dto.TheaterLocationId);
         return isValid;
     }
-    private bool IsNameValid(string name)
+    private bool ValidateName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -44,7 +47,7 @@ public class MovieTheatersSpecification
         return true;
     }
 
-    private bool IsAddressIdValid(Guid addressId)
+    private bool ValidateAddressId(Guid addressId)
     {
         if (addressId == Guid.Empty)
         {

@@ -16,40 +16,53 @@ public class SeatsSpecification
 
     public bool IsSatisfiedBy(object dto)
     {
-        if (dto is SeatsCreateDto createDto) return ValidateCreateDto(createDto);
-        else if (dto is SeatsUpdateDto updateDto) return ValidateUpdateDto(updateDto);
-        else if (dto is FilterSeatsById filterSeatsById) return ValidateFilterSeatsById(filterSeatsById);
-        else return false;
+        return dto switch
+        {
+            SeatsCreateDto createDto => ValidateCreateDto(createDto),
+            SeatsUpdateDto updateDto => ValidateUpdateDto(updateDto),
+            FilterSeatsById filterSeatsById => ValidateFilterSeatsById(filterSeatsById),
+            _ => false
+        };
     }
-    
+
     private bool ValidateCreateDto(SeatsCreateDto dto)
     {
         bool isValid = true;
-        isValid &= IsSeatNumberValid(dto.SeatNumber);
-        isValid &= IsRowLetterValid(dto.RowLetter);
-        isValid &= IsScreenIdValid(dto.ScreenId);
+        isValid &= ValidateSeatNumber(dto.SeatNumber);
+        isValid &= ValidateRowLetter(dto.RowLetter);
+        isValid &= ValidateScreenId(dto.ScreenId);
         return isValid;
     }
 
     private bool ValidateUpdateDto(SeatsUpdateDto dto)
     {
         bool isValid = true;
-        isValid &= IsIdValid(dto.Id);
-        isValid &= IsSeatNumberValid(dto.SeatNumber);
-        isValid &= IsRowLetterValid(dto.RowLetter);
-        isValid &= IsScreenIdValid(dto.ScreenId);
-        return isValid;
-    }
-    
-    private bool ValidateFilterSeatsById(FilterSeatsById filterSeatsById)
-    {
-        bool isValid = true;
-        isValid &= IsIdValid(filterSeatsById.Id);
-        isValid &= IsIncludeValid(filterSeatsById.Includes);
+        isValid &= ValidateId(dto.Id);
+        isValid &= ValidateSeatNumber(dto.SeatNumber);
+        isValid &= ValidateRowLetter(dto.RowLetter);
+        isValid &= ValidateScreenId(dto.ScreenId);
         return isValid;
     }
 
-    private bool IsIncludeValid(string[]? includes)
+    private bool ValidateFilterSeatsById(FilterSeatsById filterSeatsById)
+    {
+        bool isValid = true;
+        isValid &= ValidateId(filterSeatsById.Id);
+        isValid &= ValidateIncludes(filterSeatsById.Includes);
+        return isValid;
+    }
+    
+    private bool ValidateId(Guid id)
+    {
+        if (id == Guid.Empty)
+        {
+            _notificationContext.AddNotification("O ID não pode estar vazio.");
+            return false;
+        }
+        return true;
+    }
+    
+    private bool ValidateIncludes(string[]? includes)
     {
         if (includes == null || !includes.Any())
         {
@@ -70,18 +83,8 @@ public class SeatsSpecification
 
         return true;
     }
-
-    private bool IsIdValid(Guid id)
-    {
-        if (id == Guid.Empty)
-        {
-            _notificationContext.AddNotification("O ID não pode estar vazio.");
-            return false;
-        }
-        return true;
-    }
-
-    private bool IsSeatNumberValid(int seatNumber)
+    
+    private bool ValidateSeatNumber(int seatNumber)
     {
         if (seatNumber < 1)
         {
@@ -91,7 +94,7 @@ public class SeatsSpecification
         return true;
     }
 
-    private bool IsRowLetterValid(string rowLetter)
+    private bool ValidateRowLetter(string rowLetter)
     {
         if (string.IsNullOrWhiteSpace(rowLetter))
         {
@@ -101,7 +104,7 @@ public class SeatsSpecification
         return true;
     }
 
-    private bool IsScreenIdValid(Guid screenId)
+    private bool ValidateScreenId(Guid screenId)
     {
         if (screenId == Guid.Empty)
         {

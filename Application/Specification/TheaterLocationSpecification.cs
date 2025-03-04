@@ -12,32 +12,32 @@ public class TheaterLocationSpecification
     }
 
     public bool IsSatisfiedBy(object dto)
-    {
-        if (dto is TheaterLocationCreateDto createDto) return ValidateCreateDto(createDto);
-        else if (dto is TheaterLocationUpdateDto updateDto) return ValidateUpdateDto(updateDto);
-        else return false;
-        
-    }
+        => dto switch
+        {
+            TheaterLocationCreateDto createDto => ValidateCreateDto(createDto),
+            TheaterLocationUpdateDto updateDto => ValidateUpdateDto(updateDto),
+            _ => false
+        };
 
     private bool ValidateCreateDto(TheaterLocationCreateDto dto)
     {
         bool isValid = true;
-        isValid &= IsStreetValid(dto.Street);
-        isValid &= IsUnitNumberValid(dto.UnitNumber);
-        isValid &= IsPostalCodeValid(dto.PostalCode);
+        isValid &= ValidateStreet(dto.Street);
+        isValid &= ValidateUnitNumber(dto.UnitNumber);
+        isValid &= ValidatePostalCode(dto.PostalCode);
         return isValid;
     }
 
     private bool ValidateUpdateDto(TheaterLocationUpdateDto dto)
     {
         bool isValid = true;
-        isValid &= IsStreetValid(dto.Street);
-        isValid &= IsUnitNumberValid(dto.UnitNumber);
-        isValid &= IsPostalCodeValid(dto.PostalCode);
+        isValid &= ValidateStreet(dto.Street);
+        isValid &= ValidateUnitNumber(dto.UnitNumber);
+        isValid &= ValidatePostalCode(dto.PostalCode);
         return isValid;
     }
 
-    private bool IsStreetValid(string street)
+    private bool ValidateStreet(string street)
     {
         if (string.IsNullOrWhiteSpace(street))
         {
@@ -47,7 +47,7 @@ public class TheaterLocationSpecification
         return true;
     }
 
-    private bool IsUnitNumberValid(string unitNumber)
+    private bool ValidateUnitNumber(string unitNumber)
     {
         if (string.IsNullOrWhiteSpace(unitNumber))
         {
@@ -57,7 +57,7 @@ public class TheaterLocationSpecification
         return true;
     }
 
-    private bool IsPostalCodeValid(string postalCode)
+    private bool ValidatePostalCode(string postalCode)
     {
         if (string.IsNullOrWhiteSpace(postalCode))
         {
