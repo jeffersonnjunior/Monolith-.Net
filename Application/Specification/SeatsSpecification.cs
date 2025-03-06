@@ -69,7 +69,7 @@ public class SeatsSpecification
             return true;
         }
 
-        var validProperties = typeof(ScreensReadDto).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+        var validProperties = typeof(SeatsReadDto).GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Select(p => p.Name)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 

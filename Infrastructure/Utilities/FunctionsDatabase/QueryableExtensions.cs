@@ -24,8 +24,9 @@ public static class QueryableExtensions
             {
                 if (string.IsNullOrEmpty(filter.Value))
                     continue;
-
-                var propertyName = filter.Key.EndsWith("Contains") ? filter.Key.Replace("Contains", "") : filter.Key;
+                
+                var propertyName = filter.Key.EndsWith("Contains") ? filter.Key.Replace("Contains", "") :
+                    filter.Key.EndsWith("Equal") ? filter.Key.Replace("Equal", "") : filter.Key;
                 var member = Expression.Property(parameter, propertyName);
                 var constant = Expression.Constant(filter.Value);
 
@@ -34,6 +35,8 @@ public static class QueryableExtensions
                     Type t when t == typeof(string) => BuildStringContainsExpression(member, constant),
                     Type t when t == typeof(int) || t == typeof(double) || t == typeof(decimal) => BuildNumericEqualsExpression(member, constant),
                     Type t when t == typeof(Guid) => BuildGuidEqualsExpression(member, constant),
+                    Type t when t == typeof(DateTime) => BuildDateTimeEqualsExpression(member, constant),
+                    Type t when t.IsEnum => BuildEnumEqualsExpression(member, constant),
                     _ => throw new NotSupportedException($"The type '{member.Type}' is not supported for dynamic filtering.")
                 };
 
@@ -58,6 +61,24 @@ public static class QueryableExtensions
             ItensList = paginatedQuery.ToList()
         };
     }
+    private static Expression BuildDateTimeEqualsExpression(MemberExpression member, ConstantExpression constant)
+    {
+        var dateTimeValue = DateTime.Parse((string)constant.Value);
+        var utcDateTimeValue = dateTimeValue.Kind == DateTimeKind.Unspecified
+            ? DateTime.SpecifyKind(dateTimeValue, DateTimeKind.Utc)
+            : dateTimeValue.ToUniversalTime();
+        var dateOnlyConstant = Expression.Constant(utcDateTimeValue.Date, typeof(DateTime));
+
+        var memberDate = Expression.Property(member, "Date");
+        return Expression.Equal(memberDate, dateOnlyConstant);
+    }
+
+    private static Expression BuildEnumEqualsExpression(MemberExpression member, ConstantExpression constant)
+    {
+        var enumValue = Enum.Parse(member.Type, (string)constant.Value);
+        var enumConstant = Expression.Constant(enumValue);
+        return Expression.Equal(member, enumConstant);
+    }
 
     private static Expression BuildGuidEqualsExpression(MemberExpression member, ConstantExpression constant)
     {
@@ -65,6 +86,7 @@ public static class QueryableExtensions
         var guidConstant = Expression.Constant(guidValue);
         return Expression.Equal(member, guidConstant);
     }
+
     private static Expression BuildStringContainsExpression(MemberExpression member, ConstantExpression constant)
     {
         var containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) });

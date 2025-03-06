@@ -62,8 +62,15 @@ public class ScreensRepository : BaseRepository<Screens>, IScreensRepository
     }
     private bool IsScreenNumberInUse(object? existingScreens, Guid movieTheatersId, string screenNumber)
     {
-        return (existingScreens == null || ((dynamic)existingScreens).ScreenNumber != screenNumber) &&
-               GetByElement(new FilterByItem { Field = "MovieTheaterId", Value = movieTheatersId, Key = "Equal" }) is not null &&
-               GetByElement(new FilterByItem { Field = "ScreenNumber", Value = screenNumber, Key = "Equal" }) is not null;
+        bool isInUse = (existingScreens == null || ((dynamic)existingScreens).ScreenNumber != screenNumber) &&
+                       GetByElement(new FilterByItem { Field = "MovieTheaterId", Value = movieTheatersId, Key = "Equal" }) is not null &&
+                       GetByElement(new FilterByItem { Field = "ScreenNumber", Value = screenNumber, Key = "Equal" }) is not null;
+
+        if (isInUse)
+        {
+            _notificationContext.AddNotification("Já existe uma sala com esse número para o mesmo cinema.");
+        }
+
+        return isInUse;
     }
 }

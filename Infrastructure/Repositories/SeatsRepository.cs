@@ -46,7 +46,8 @@ public class SeatsRepository : BaseRepository<Seats>, ISeatsRepository
 
         (var result, bool validadeIncludes) = GetFilters(filters, filter.PageSize, filter.PageNumber, filter.Includes);
     
-        return result;    }
+        return result;
+    }
 
     public bool ValidateInput(object dto, bool isUpdate, Seats existingSeats = null)
     {

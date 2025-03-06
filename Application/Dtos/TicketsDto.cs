@@ -7,7 +7,7 @@ public class TicketsDto
     public Guid SeatId { get; set; }
     public Guid ClientId { get; set; }
 
-    public virtual SessionsDto Session { get; set; }
+    public virtual SessionsReadDto SessionRead { get; set; }
     public virtual SeatsReadDto SeatRead { get; set; }
     public virtual CustomerDetailsDto CustomerDetails { get; set; }
 }

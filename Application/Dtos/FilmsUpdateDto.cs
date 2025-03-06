@@ -1,13 +1,12 @@
 ﻿using Domain.Enums;
 
-namespace Domain.Entities;
+namespace Application.Dtos;
 
-public class Films
+public class FilmsUpdateDto
 {
-    public Guid Id { get; set; } 
+    public Guid Id { get; set; }
     public required string Name { get; set; }
     public int Duration { get; set; }
     public int AgeRange { get; set; }
     public FilmGenres FilmGenres { get; set; }
-    public virtual ICollection<Sessions> Sessions { get; set; }
 }

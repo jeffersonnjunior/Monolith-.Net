@@ -5,8 +5,8 @@ namespace Domain.Enums;
 public enum FilmAudioOption
 {
     [Description("Legendado")]
-    OriginalWithSubtitles,
+    OriginalWithSubtitles = 1,
 
     [Description("Dublado")]
-    Dubbed
+    Dubbed = 2
 }
