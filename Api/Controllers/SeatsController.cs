@@ -1,5 +1,6 @@
 ﻿using Application.Dtos;
 using Application.Interfaces.IServices;
+using Infrastructure.Notifications;
 using Infrastructure.Utilities.FiltersModel;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +11,11 @@ namespace Api.Controllers;
 public class SeatsController : Controller
 {
     private readonly ISeatsService _seatsService;
-    public SeatsController(ISeatsService seatsService)
+    private readonly NotificationContext _notificationContext;
+    public SeatsController(ISeatsService seatsService, NotificationContext notificationContext)
     {
         _seatsService = seatsService;
+        _notificationContext = notificationContext;
     }
     
     [HttpGet]
@@ -39,7 +42,10 @@ public class SeatsController : Controller
     {
         var seatsUpdateDto = _seatsService.Add(seatsCreateDto);
         
-        return Ok(seatsUpdateDto);
+        if (_notificationContext.HasNotifications()) return BadRequest(new { errors = _notificationContext.GetNotifications() });
+        
+        var uri = Url.Action(nameof(GetById), new { id = seatsUpdateDto.Id });
+        return Created(uri, seatsUpdateDto);
     }
     
     [HttpPut]
