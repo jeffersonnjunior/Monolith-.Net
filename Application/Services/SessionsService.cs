@@ -67,7 +67,7 @@ public class SessionsService : ISessionsService
         
         var existingSessions = _sessionsRepository.GetByElement(new FilterByItem { Field = "Id", Value = sessionsUpdateDto.Id, Key = "Equal" });
         
-        if(!_sessionsRepository.ValidateInput(sessionsUpdateDto, false)) return;
+        if(!_sessionsRepository.ValidateInput(sessionsUpdateDto, false, existingSessions)) return;
         
         var sessions = _mapper.Map<Sessions>(sessionsUpdateDto);
         _sessionsRepository.Update(sessions);

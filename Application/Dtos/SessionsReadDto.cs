@@ -10,5 +10,5 @@ public class SessionsReadDto
     public FilmAudioOption FilmAudioOption { get; set; }
     public FilmFormat FilmFormat { get; set; }
 
-    public virtual ICollection<TicketsDto> Tickets { get; set; }
+    public virtual ICollection<TicketsReadDto> Tickets { get; set; }
 }

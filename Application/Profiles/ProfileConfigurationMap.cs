@@ -8,7 +8,9 @@ public class ProfileConfigurationMap : Profile
 {
     public ProfileConfigurationMap()
     {
-        CreateMap<CustomerDetails, CustomerDetailsDto>().ReverseMap();
+        CreateMap<CustomerDetails, CustomerDetailsCreateDto>().ReverseMap();
+        CreateMap<CustomerDetails, CustomerDetailsReadDto>().ReverseMap();
+        CreateMap<CustomerDetails, CustomerDetailsUpdateDto>().ReverseMap();
         CreateMap<Films, FilmsCreateDto>().ReverseMap();
         CreateMap<Films, FilmsReadDto>().ReverseMap();
         CreateMap<Films, FilmsUpdateDto>().ReverseMap();
@@ -27,6 +29,8 @@ public class ProfileConfigurationMap : Profile
         CreateMap<TheaterLocation, TheaterLocationCreateDto>().ReverseMap();
         CreateMap<TheaterLocation, TheaterLocationReadDto>().ReverseMap();
         CreateMap<TheaterLocation, TheaterLocationUpdateDto>().ReverseMap();
-        CreateMap<Tickets, TicketsDto>().ReverseMap();
+        CreateMap<Tickets, TicketsCreateDto>().ReverseMap();
+        CreateMap<Tickets, TicketsReadDto>().ReverseMap();
+        CreateMap<Tickets, TicketsUpdateDto>().ReverseMap();
     }
 }

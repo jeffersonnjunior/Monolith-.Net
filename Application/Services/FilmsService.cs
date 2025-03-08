@@ -15,8 +15,6 @@ public class FilmsService : IFilmsService
     private readonly IMapper _mapper;
     private readonly NotificationContext _notifierContext;
     private readonly FilmsSpecification _filmsSpecification;
-    private IFilmsService _filmsServiceImplementation;
-
 
     public FilmsService(IFilmsRepository filmsRepository, IMapper mapper, NotificationContext notifierContext )
     {

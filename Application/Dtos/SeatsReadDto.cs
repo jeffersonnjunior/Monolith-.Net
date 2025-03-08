@@ -7,5 +7,5 @@ public class SeatsReadDto
     public required string RowLetter { get; set; }
     public Guid ScreenId { get; set; }
 
-    public virtual ICollection<TicketsDto> Tickets { get; set; }
+    public virtual ICollection<TicketsReadDto> Tickets { get; set; }
 }
