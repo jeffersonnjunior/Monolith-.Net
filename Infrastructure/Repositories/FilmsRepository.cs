@@ -79,7 +79,7 @@ public class FilmsRepository : BaseRepository<Films>, IFilmsRepository
         return true;
     }
 
-    private bool ValidadeAgeAndGenre(int ageRange, FilmGenres filmGenres)
+    public bool ValidadeAgeAndGenre(int ageRange, FilmGenres filmGenres)
     {
         var restrictedGenres = new List<FilmGenres> { FilmGenres.Horror, FilmGenres.Thriller, FilmGenres.Crime };
         var freeAgeGenres = new List<FilmGenres> { FilmGenres.Musical, FilmGenres.Family };

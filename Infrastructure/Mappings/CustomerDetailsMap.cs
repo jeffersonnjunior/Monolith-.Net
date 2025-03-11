@@ -23,6 +23,6 @@ public class CustomerDetailsMap : IEntityTypeConfiguration<CustomerDetails>
 
         builder.HasMany(cd => cd.Tickets)
             .WithOne(t => t.CustomerDetails)
-            .HasForeignKey(t => t.ClientId);
+            .HasForeignKey(t => t.CustomerDetailsId);
     }
 }

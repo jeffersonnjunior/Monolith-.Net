@@ -60,7 +60,7 @@ public class ScreensRepository : BaseRepository<Screens>, IScreensRepository
 
         return isValid;
     }
-    private bool IsScreenNumberInUse(object? existingScreens, Guid movieTheatersId, string screenNumber)
+    public bool IsScreenNumberInUse(object? existingScreens, Guid movieTheatersId, string screenNumber)
     {
         bool isInUse = (existingScreens == null || ((dynamic)existingScreens).ScreenNumber != screenNumber) &&
                        GetByElement(new FilterByItem { Field = "MovieTheaterId", Value = movieTheatersId, Key = "Equal" }) is not null &&

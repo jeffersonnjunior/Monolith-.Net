@@ -16,7 +16,7 @@ public class TicketsMap : IEntityTypeConfiguration<Tickets>
         builder.Property(t => t.SeatId)
             .IsRequired();
 
-        builder.Property(t => t.ClientId)
+        builder.Property(t => t.CustomerDetailsId)
             .IsRequired();
 
         builder.HasOne(t => t.Session)
@@ -29,6 +29,6 @@ public class TicketsMap : IEntityTypeConfiguration<Tickets>
 
         builder.HasOne(t => t.CustomerDetails)
             .WithMany(cd => cd.Tickets)
-            .HasForeignKey(t => t.ClientId);
+            .HasForeignKey(t => t.CustomerDetailsId);
     }
 }
