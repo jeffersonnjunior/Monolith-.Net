@@ -13,13 +13,26 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.0.x
+
     - name: Restore dependencies
       run: dotnet restore
+
     - name: Build
       run: dotnet build --no-restore
+
     - name: Test
       run: dotnet test --no-build --verbosity normal
+
+    - name: Build Docker image
+      run: |
+        docker build -t meu-app:latest .
+
+    # - name: Push Docker image to Docker Hub
+    #   run: |
+    #     docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    #     docker push meu-app:latest
