@@ -77,7 +77,7 @@ public class SeatsService : ISeatsService
     {
         Seats existingSeats = _seatsRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
         
-        if (_notificationContext.HasNotifications()) return;
+        if (existingSeats is null) return;
         
         _seatsRepository.Delete(existingSeats);
     }

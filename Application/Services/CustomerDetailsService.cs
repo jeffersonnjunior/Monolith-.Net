@@ -73,7 +73,7 @@ public class CustomerDetailsService : ICustomerDetailsService
     {
         CustomerDetails existingCustomerDetails = _customerDetailsRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
 
-        if (_notificationContext.HasNotifications()) return;
+        if (existingCustomerDetails is null) return;
 
         _customerDetailsRepository.Delete(existingCustomerDetails);        
     }

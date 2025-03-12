@@ -72,7 +72,7 @@ public class TheaterLocationService : ITheaterLocationService
     {
         TheaterLocation theaterLocation = _theaterLocationRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
 
-        if (_notifierContext.HasNotifications()) return;
+        if (theaterLocation is null) return;
 
         _theaterLocationRepository.Delete(theaterLocation);
     }

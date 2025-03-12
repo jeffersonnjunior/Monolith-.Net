@@ -79,7 +79,7 @@ public class ScreensService : IScreensService
     {
         Screens existingScreens = _screensRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
 
-        if (_notificationContext.HasNotifications()) return;
+        if (existingScreens is null) return;
         
         _screensRepository.Delete(existingScreens);
     }

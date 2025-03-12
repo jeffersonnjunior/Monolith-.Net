@@ -78,7 +78,7 @@ public class SessionsService : ISessionsService
     {
         Sessions existingSessions = _sessionsRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
         
-        if (_notificationContext.HasNotifications()) return;
+        if (existingSessions is null) return;
         
         _sessionsRepository.Delete(existingSessions);
     }

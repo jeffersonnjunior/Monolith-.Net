@@ -72,7 +72,7 @@ public class MovieTheatersService : IMovieTheatersService
     {
         MovieTheaters existingMovieTheater = _movieTheatersRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
         
-        if (_notificationContext.HasNotifications()) return;
+        if (existingMovieTheater is null) return;
         
         _movieTheatersRepository.Delete(existingMovieTheater);
     }

@@ -71,7 +71,7 @@ public class TicketsService : ITicketsService
     {
         Tickets existingTickets = _ticketsRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
 
-        if (_notificationContext.HasNotifications()) return;
+        if (existingTickets is null) return;
         
         _ticketsRepository.Delete(existingTickets);
     }
