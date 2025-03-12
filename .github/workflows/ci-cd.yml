@@ -38,7 +38,7 @@ jobs:
       run: dotnet restore
 
     - name: Run tests
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test Tests/Tests.csproj --no-build --verbosity normal
 
   build_image:
     runs-on: ubuntu-latest
