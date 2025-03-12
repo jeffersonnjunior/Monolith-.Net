@@ -28,4 +28,4 @@ jobs:
 
     - name: Build Docker image
       run: |
-        docker build -t meu-app:latest -f api/Dockerfile api
+        docker build -t meu-app:latest -f Api/Dockerfile api
