@@ -13,14 +13,14 @@ public class FilmsService : IFilmsService
 {
     private readonly IFilmsRepository _filmsRepository;
     private readonly IMapper _mapper;
-    private readonly NotificationContext _notifierContext;
+    private readonly NotificationContext _notificationContext;
     private readonly FilmsSpecification _filmsSpecification;
 
     public FilmsService(IFilmsRepository filmsRepository, IMapper mapper, NotificationContext notifierContext )
     {
         _filmsRepository = filmsRepository;
         _mapper = mapper;
-        _notifierContext = notifierContext;
+        _notificationContext = notifierContext;
         _filmsSpecification = new FilmsSpecification(notifierContext);
     }
 
@@ -53,11 +53,12 @@ public class FilmsService : IFilmsService
         if (!_filmsSpecification.IsSatisfiedBy(filmsCreateDto)) return filmsUpdateDto;
 
         if(!_filmsRepository.ValidateInput(filmsCreateDto, false)) return filmsUpdateDto;
-
+        
         Films films = _mapper.Map<Films>(filmsCreateDto);
-        films = _filmsRepository.Add(films);
+        
+        filmsUpdateDto = _mapper.Map<FilmsUpdateDto>(_filmsRepository.Add(films));
     
-        return _mapper.Map(films, filmsUpdateDto);
+        return filmsUpdateDto;
     }
 
     public void Update(FilmsUpdateDto filmsUpdateDto)
@@ -75,9 +76,9 @@ public class FilmsService : IFilmsService
 
     public void Delete(Guid id)
     {
-        var existingFilms = _filmsRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
+        Films existingFilms = _filmsRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
         
-        if(existingFilms is null) return;
+        if (_notificationContext.HasNotifications()) return;
         
         _filmsRepository.Delete(existingFilms);
 

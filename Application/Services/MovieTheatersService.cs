@@ -13,13 +13,13 @@ public class MovieTheatersService : IMovieTheatersService
 {
     private readonly IMovieTheatersRepository _movieTheatersRepository;
     private readonly IMapper _mapper;
-    private readonly NotificationContext _notifierContext;
+    private readonly NotificationContext _notificationContext;
     private readonly MovieTheatersSpecification  _movieTheatersSpecification;
     public MovieTheatersService(IMovieTheatersRepository movieTheatersRepository, IMapper mapper, NotificationContext notifierContext )
     {
         _movieTheatersRepository = movieTheatersRepository;
         _mapper = mapper;
-        _notifierContext = notifierContext;
+        _notificationContext = notifierContext;
         _movieTheatersSpecification = new MovieTheatersSpecification(notifierContext);
     }
 
@@ -45,13 +45,14 @@ public class MovieTheatersService : IMovieTheatersService
         MovieTheatersUpdateDto movieTheatersUpdateDto = null;
     
         if (!_movieTheatersSpecification.IsSatisfiedBy(movieTheatersCreateDto)) return movieTheatersUpdateDto;
-    
+        
         if(!_movieTheatersRepository.ValidateInput(movieTheatersCreateDto, false)) return movieTheatersUpdateDto;
-    
+        
         MovieTheaters movieTheaters = _mapper.Map<MovieTheaters>(movieTheatersCreateDto);
-        movieTheaters = _movieTheatersRepository.Add(movieTheaters);
+        
+        movieTheatersUpdateDto = _mapper.Map<MovieTheatersUpdateDto>(_movieTheatersRepository.Add(movieTheaters));
     
-        return _mapper.Map(movieTheaters, movieTheatersUpdateDto);
+        return movieTheatersUpdateDto;
     }
     
     public void Update(MovieTheatersUpdateDto movieTheatersUpdateDto)
@@ -69,9 +70,9 @@ public class MovieTheatersService : IMovieTheatersService
 
     public void Delete(Guid id)
     {
-        var existingMovieTheater = _movieTheatersRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
+        MovieTheaters existingMovieTheater = _movieTheatersRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
         
-        if(existingMovieTheater is null) return;
+        if (_notificationContext.HasNotifications()) return;
         
         _movieTheatersRepository.Delete(existingMovieTheater);
     }

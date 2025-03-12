@@ -22,30 +22,26 @@ public class SeatsController : Controller
     [Route("get-by-id")]
     public IActionResult GetById([FromQuery] FilterSeatsById filterSeatsById)
     {
-        var seatsReadDto = _seatsService.GetById(filterSeatsById);
-        
-        return Ok(seatsReadDto);
+        return Ok(_seatsService.GetById(filterSeatsById));
     }
     
     [HttpGet]
     [Route("get-filter")]
     public IActionResult GetFilter([FromQuery] FilterSeatsTable filter)
     {
-        var filterReturn = _seatsService.GetFilter(filter);
-        
-        return Ok(filterReturn);
+        return Ok(_seatsService.GetFilter(filter));
     }
     
     [HttpPost]
     [Route("add")]
     public IActionResult Add([FromBody] SeatsCreateDto seatsCreateDto)
     {
-        var seatsUpdateDto = _seatsService.Add(seatsCreateDto);
+        var seats = _seatsService.Add(seatsCreateDto);
         
         if (_notificationContext.HasNotifications()) return BadRequest(new { errors = _notificationContext.GetNotifications() });
         
-        var uri = Url.Action(nameof(GetById), new { id = seatsUpdateDto.Id });
-        return Created(uri, seatsUpdateDto);
+        var uri = Url.Action(nameof(GetById), new { id = seats.Id });
+        return Created(uri, seats);
     }
     
     [HttpPut]

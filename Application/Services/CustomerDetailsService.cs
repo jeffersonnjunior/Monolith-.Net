@@ -13,14 +13,14 @@ public class CustomerDetailsService : ICustomerDetailsService
 {
     private readonly ICustomerDetailsRepository _customerDetailsRepository;
     private readonly IMapper _mapper;
-    private readonly NotificationContext _notifierContext;
+    private readonly NotificationContext _notificationContext;
     private readonly CustomerDetailsSpecification _customerDetailsSpecification;
     
     public CustomerDetailsService(ICustomerDetailsRepository customerDetailsRepository, IMapper mapper, NotificationContext notifierContext)
     {
         _customerDetailsRepository = customerDetailsRepository;
         _mapper = mapper;
-        _notifierContext = notifierContext;
+        _notificationContext = notifierContext;
         _customerDetailsSpecification = new CustomerDetailsSpecification(notifierContext);
     }
 
@@ -65,15 +65,16 @@ public class CustomerDetailsService : ICustomerDetailsService
         if(!_customerDetailsRepository.ValidateInput(customerDetailsUpdateDto, false, existingCustomerDetails)) return;
         
         var customerDetails = _mapper.Map<CustomerDetails>(customerDetailsUpdateDto);
+        
         _customerDetailsRepository.Update(customerDetails);
     }
 
     public void Delete(Guid id)
     {
-        CustomerDetails customerDetails = _customerDetailsRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
+        CustomerDetails existingCustomerDetails = _customerDetailsRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
 
-        if (_notifierContext.HasNotifications()) return;
+        if (_notificationContext.HasNotifications()) return;
 
-        _customerDetailsRepository.Delete(customerDetails);        
+        _customerDetailsRepository.Delete(existingCustomerDetails);        
     }
 }

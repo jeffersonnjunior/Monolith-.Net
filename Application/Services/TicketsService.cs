@@ -13,13 +13,13 @@ public class TicketsService : ITicketsService
 {
     private readonly ITicketsRepository _ticketsRepository;
     private readonly IMapper _mapper;
-    private readonly NotificationContext _notifierContext;
+    private readonly NotificationContext _notificationContext;
     private readonly TicketsSpecification _ticketsSpecification;
     public TicketsService(ITicketsRepository ticketsRepository, IMapper mapper, NotificationContext notifierContext)
     {
         _ticketsRepository = ticketsRepository;
         _mapper = mapper;
-        _notifierContext = notifierContext;
+        _notificationContext = notifierContext;
         _ticketsSpecification = new TicketsSpecification(notifierContext);
     }
 
@@ -48,11 +48,12 @@ public class TicketsService : ITicketsService
         if (!_ticketsSpecification.IsSatisfiedBy(ticketsCreateDto)) return ticketsUpdateDto;
 
         if (!_ticketsRepository.ValidateInput(ticketsCreateDto, false)) return ticketsUpdateDto;
-
+         
         Tickets tickets = _mapper.Map<Tickets>(ticketsCreateDto);
-        tickets = _ticketsRepository.Add(tickets);
+        
+        ticketsUpdateDto = _mapper.Map<TicketsUpdateDto>(_ticketsRepository.Add(tickets));
 
-        return _mapper.Map(tickets, ticketsUpdateDto);
+        return ticketsUpdateDto;
     }
 
     public void Update(TicketsUpdateDto ticketsUpdateDto)
@@ -62,15 +63,16 @@ public class TicketsService : ITicketsService
         if (!_ticketsRepository.ValidateInput(ticketsUpdateDto, true)) return;
 
         Tickets tickets = _mapper.Map<Tickets>(ticketsUpdateDto);
+        
         _ticketsRepository.Update(tickets);
     }
 
     public void Delete(Guid id)
     {
-        var existingTickets = _ticketsRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
+        Tickets existingTickets = _ticketsRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
 
-        if (existingTickets == null) return;
-
+        if (_notificationContext.HasNotifications()) return;
+        
         _ticketsRepository.Delete(existingTickets);
     }
 }

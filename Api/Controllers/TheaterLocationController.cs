@@ -37,12 +37,12 @@ public class TheaterLocationController : Controller
     [Route("add")]
     public IActionResult Post([FromBody] TheaterLocationCreateDto theaterLocationCreateDto)
     {
-        var createdLocation = _theaterLocationService.Add(theaterLocationCreateDto);
+        var theaterLocation = _theaterLocationService.Add(theaterLocationCreateDto);
 
         if (_notificationContext.HasNotifications()) return BadRequest(new { errors = _notificationContext.GetNotifications() });
         
-        var uri = Url.Action(nameof(GetById), new { id = createdLocation.Id });
-        return Created(uri, createdLocation);
+        var uri = Url.Action(nameof(GetById), new { id = theaterLocation.Id });
+        return Created(uri, theaterLocation);
     }
 
     [HttpPut]

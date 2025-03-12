@@ -25,30 +25,26 @@ public class FilmsController : Controller
     [Route("get-by-id")]
     public IActionResult GetById(FilterFilmsById filterFilmsById)
     {
-        var film = _filmService.GetById(filterFilmsById);
-        
-        return Ok(film);
+        return Ok(_filmService.GetById(filterFilmsById));
     }
     
     [HttpGet]
     [Route("get-filter")]
     public IActionResult GetFilter(FilterFilmsTable filter)
     {
-        var films = _filmService.GetFilter(filter);
-        
-        return Ok(films);
+        return Ok(_filmService.GetFilter(filter));
     }
     
     [HttpPost]
     [Route("add")]
     public IActionResult Post([FromBody] FilmsCreateDto filmsCreateDto)
     {
-        var createdFilm = _filmService.Add(filmsCreateDto);
+        var film = _filmService.Add(filmsCreateDto);
         
         if (_notificationContext.HasNotifications()) return BadRequest(new { errors = _notificationContext.GetNotifications() });
         
-        var uri = Url.Action(nameof(GetById), new { id = createdFilm.Id });
-        return Created(uri, createdFilm);
+        var uri = Url.Action(nameof(GetById), new { id = film.Id });
+        return Created(uri, film);
     }
     
     [HttpPut]

@@ -70,14 +70,15 @@ public class SessionsService : ISessionsService
         if(!_sessionsRepository.ValidateInput(sessionsUpdateDto, false, existingSessions)) return;
         
         var sessions = _mapper.Map<Sessions>(sessionsUpdateDto);
+        
         _sessionsRepository.Update(sessions);
     }
 
     public void Delete(Guid id)
     {
-        var existingSessions = _sessionsRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
+        Sessions existingSessions = _sessionsRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
         
-        if(existingSessions is null) return;
+        if (_notificationContext.HasNotifications()) return;
         
         _sessionsRepository.Delete(existingSessions);
     }

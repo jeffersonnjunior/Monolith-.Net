@@ -37,12 +37,12 @@ public class SessionsController : Controller
     [Route("add")]
     public IActionResult Add([FromBody] SessionsCreateDto sessionsCreateDto)
     {
-        var createdSession = _sessionsService.Add(sessionsCreateDto);
+        var session = _sessionsService.Add(sessionsCreateDto);
 
         if (_notificationContext.HasNotifications()) return BadRequest(new { errors = _notificationContext.GetNotifications() });
 
-        var uri = Url.Action(nameof(GetById), new { id = createdSession.Id });
-        return Created(uri, createdSession);
+        var uri = Url.Action(nameof(GetById), new { id = session.Id });
+        return Created(uri, session);
     }
     
     [HttpPut]

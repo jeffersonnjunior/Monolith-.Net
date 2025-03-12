@@ -52,11 +52,14 @@ public class ScreensService : IScreensService
         if (!_screensSpecification.IsSatisfiedBy(screensCreateDto)) return screensUpdateDto;
         
         if(!_screensRepository.ValidateInput(screensCreateDto, false)) return screensUpdateDto;
-
-        var screen = _mapper.Map<Screens>(screensCreateDto);
-        screen = _screensRepository.Add(screen);
-
-        return _mapper.Map(screen, screensUpdateDto);
+        
+        if(!_screensRepository.ValidateInput(screensCreateDto, false)) return screensUpdateDto;
+        
+        Screens screen = _mapper.Map<Screens>(screensCreateDto);
+        
+        screensUpdateDto = _mapper.Map<ScreensUpdateDto>(_screensRepository.Add(screen));
+    
+        return screensUpdateDto;
     }
     
     public void Update(ScreensUpdateDto screensUpdateDto)
@@ -68,14 +71,15 @@ public class ScreensService : IScreensService
         if(!_screensRepository.ValidateInput(screensUpdateDto, true, existingScreens)) return;
 
         var screen = _mapper.Map<Screens>(screensUpdateDto);
+        
         _screensRepository.Update(screen);
     }
     
     public void Delete(Guid id)
     {
-        var existingScreens = _screensRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
+        Screens existingScreens = _screensRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
 
-        if(existingScreens is null) return;
+        if (_notificationContext.HasNotifications()) return;
         
         _screensRepository.Delete(existingScreens);
     }

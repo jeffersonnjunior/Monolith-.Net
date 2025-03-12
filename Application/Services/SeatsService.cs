@@ -13,14 +13,14 @@ public class SeatsService : ISeatsService
 {
     private readonly ISeatsRepository _seatsRepository;
     private readonly IMapper _mapper;
-    private readonly NotificationContext _notifierContext;
+    private readonly NotificationContext _notificationContext;
     private readonly SeatsSpecification _seatsSpecification;
 
     public SeatsService(ISeatsRepository seatsRepository, IMapper mapper ,NotificationContext notificationContext)
     {
         _seatsRepository = seatsRepository;
         _mapper = mapper;
-        _notifierContext = notificationContext;
+        _notificationContext = notificationContext;
         _seatsSpecification = new SeatsSpecification(notificationContext);
     }
 
@@ -75,9 +75,9 @@ public class SeatsService : ISeatsService
 
     public void Delete(Guid id)
     {
-        var existingSeats = _seatsRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
+        Seats existingSeats = _seatsRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
         
-        if(existingSeats is null) return;
+        if (_notificationContext.HasNotifications()) return;
         
         _seatsRepository.Delete(existingSeats);
     }

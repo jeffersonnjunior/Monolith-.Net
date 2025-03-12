@@ -37,12 +37,12 @@ public class ScreensController : Controller
     [Route("add")]
     public IActionResult Add([FromBody] ScreensCreateDto screensCreateDto)
     {
-        var createdScreens = _screensService.Add(screensCreateDto);
+        var screens = _screensService.Add(screensCreateDto);
         
         if (_notificationContext.HasNotifications()) return BadRequest(new { errors = _notificationContext.GetNotifications() });
         
-        var uri = Url.Action(nameof(GetById), new { id = createdScreens.Id });
-        return Created(uri, createdScreens);
+        var uri = Url.Action(nameof(GetById), new { id = screens.Id });
+        return Created(uri, screens);
     }
 
     [HttpPost]
