@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
+[ApiController]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [Produces("application/json")]
-[Route("api/Tickets")]
 
 public class TicketsController : Controller
 {

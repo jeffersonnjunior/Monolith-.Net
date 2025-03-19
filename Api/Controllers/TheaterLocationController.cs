@@ -6,8 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
+[ApiController]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [Produces("application/json")]
-[Route("api/TheaterLocation")]
 public class TheaterLocationController : Controller
 {
     private readonly ITheaterLocationService _theaterLocationService;

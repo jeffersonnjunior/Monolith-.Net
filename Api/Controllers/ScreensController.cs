@@ -7,8 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
+[ApiController]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [Produces("application/json")]
-[Route("api/Screens")]
 public class ScreensController : Controller
 {
     private readonly IScreensService _screensService;

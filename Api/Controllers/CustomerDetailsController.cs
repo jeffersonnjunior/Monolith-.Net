@@ -4,12 +4,12 @@ using Infrastructure.Notifications;
 using Microsoft.AspNetCore.Mvc;
 using Infrastructure.Utilities.FiltersModel;
 
-
 namespace Api.Controllers;
 
+[ApiController]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 [Produces("application/json")]
-[Route("api/CustomerDetails")]
-
 public class CustomerDetailsController : Controller
 {
     private readonly ICustomerDetailsService _customerDetailsService;
