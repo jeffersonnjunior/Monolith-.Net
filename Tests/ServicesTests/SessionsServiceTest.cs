@@ -10,7 +10,7 @@ using Infrastructure.Utilities.FiltersModel;
 using Moq;
 using Xunit;
 
-namespace ServicesTests;
+namespace ServicesTest;
 
 public class SessionsServiceTest
 {

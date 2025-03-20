@@ -8,7 +8,7 @@ using Infrastructure.Notifications;
 using Infrastructure.Utilities.FiltersModel;
 using Moq;
 
-namespace ServicesTests;
+namespace ServicesTest;
 
 public class ScreensServiceTest
 {

@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using Infrastructure.Utilities.FiltersModel;
 using Xunit;
 
-namespace ServicesTests;
+namespace ServicesTest;
 
 public class TicketsServiceTests
 {

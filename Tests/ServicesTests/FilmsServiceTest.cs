@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using Domain.Enums;
 using Xunit;
 
-namespace ServicesTests;
+namespace ServicesTest;
 
 public class FilmsServiceTests
 {
