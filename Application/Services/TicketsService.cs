@@ -1,7 +1,7 @@
 ﻿using Application.Dtos;
+using Application.Interfaces.IFactory;
 using Application.Interfaces.IServices;
 using Application.Specification;
-using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
@@ -12,21 +12,32 @@ namespace Application.Services;
 public class TicketsService : ITicketsService
 {
     private readonly ITicketsRepository _ticketsRepository;
-    private readonly IMapper _mapper;
     private readonly NotificationContext _notificationContext;
     private readonly TicketsSpecification _ticketsSpecification;
-    public TicketsService(ITicketsRepository ticketsRepository, IMapper mapper, NotificationContext notifierContext)
+    private readonly ITicketsFactory _ticketsFactory;
+
+    public TicketsService(
+        ITicketsRepository ticketsRepository,
+        NotificationContext notifierContext,
+        ITicketsFactory ticketsFactory)
     {
         _ticketsRepository = ticketsRepository;
-        _mapper = mapper;
         _notificationContext = notifierContext;
         _ticketsSpecification = new TicketsSpecification(notifierContext);
+        _ticketsFactory = ticketsFactory;
     }
 
     public TicketsReadDto GetById(FilterTicketsById filterTicketsById)
     {
-        return _mapper.Map<TicketsReadDto>(_ticketsRepository.GetByElement(new FilterByItem { Field = "Id", Value = filterTicketsById.Id, Key = "Equal", Includes = filterTicketsById.Includes }));
+        var ticket = _ticketsRepository.GetByElement(new FilterByItem
+        {
+            Field = "Id",
+            Value = filterTicketsById.Id,
+            Key = "Equal",
+            Includes = filterTicketsById.Includes
+        });
 
+        return _ticketsFactory.MapToTicketReadDto(ticket);
     }
 
     public FilterReturn<TicketsReadDto> GetFilter(FilterTicketsTable filter)
@@ -37,7 +48,7 @@ public class TicketsService : ITicketsService
             TotalRegister = filterResult.TotalRegister,
             TotalRegisterFilter = filterResult.TotalRegisterFilter,
             TotalPages = filterResult.TotalPages,
-            ItensList = _mapper.Map<IEnumerable<TicketsReadDto>>(filterResult.ItensList)
+            ItensList = filterResult.ItensList.Select(_ticketsFactory.MapToTicketReadDto)
         };
     }
 
@@ -48,10 +59,10 @@ public class TicketsService : ITicketsService
         if (!_ticketsSpecification.IsSatisfiedBy(ticketsCreateDto)) return ticketsUpdateDto;
 
         if (!_ticketsRepository.ValidateInput(ticketsCreateDto, false)) return ticketsUpdateDto;
-         
-        Tickets tickets = _mapper.Map<Tickets>(ticketsCreateDto);
-        
-        ticketsUpdateDto = _mapper.Map<TicketsUpdateDto>(_ticketsRepository.Add(tickets));
+
+        var ticket = _ticketsFactory.MapToTicket(ticketsCreateDto);
+
+        ticketsUpdateDto = _ticketsFactory.MapToTicketUpdateDto(_ticketsRepository.Add(ticket));
 
         return ticketsUpdateDto;
     }
@@ -62,17 +73,22 @@ public class TicketsService : ITicketsService
 
         if (!_ticketsRepository.ValidateInput(ticketsUpdateDto, true)) return;
 
-        Tickets tickets = _mapper.Map<Tickets>(ticketsUpdateDto);
-        
-        _ticketsRepository.Update(tickets);
+        var ticket = _ticketsFactory.MapToTicketFromUpdateDto(ticketsUpdateDto);
+
+        _ticketsRepository.Update(ticket);
     }
 
     public void Delete(Guid id)
     {
-        Tickets existingTickets = _ticketsRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
+        var existingTicket = _ticketsRepository.GetByElement(new FilterByItem
+        {
+            Field = "Id",
+            Value = id,
+            Key = "Equal"
+        });
 
-        if (existingTickets is null) return;
-        
-        _ticketsRepository.Delete(existingTickets);
+        if (existingTicket is null) return;
+
+        _ticketsRepository.Delete(existingTicket);
     }
 }

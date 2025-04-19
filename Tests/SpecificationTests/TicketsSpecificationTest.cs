@@ -23,7 +23,7 @@ public class TicketsSpecificationTest
         {
             SessionId = Guid.NewGuid(),
             SeatId = Guid.NewGuid(),
-            ClientId = Guid.NewGuid()
+            CustomerDetailsId = Guid.NewGuid()
         };
 
         // Act
@@ -41,7 +41,7 @@ public class TicketsSpecificationTest
         {
             SessionId = Guid.Empty,
             SeatId = Guid.Empty,
-            ClientId = Guid.Empty
+            CustomerDetailsId = Guid.Empty
         };
 
         // Act
@@ -60,7 +60,7 @@ public class TicketsSpecificationTest
             Id = Guid.NewGuid(),
             SessionId = Guid.NewGuid(),
             SeatId = Guid.NewGuid(),
-            ClientId = Guid.NewGuid()
+            CustomerDetailsId = Guid.NewGuid()
         };
 
         // Act
@@ -79,7 +79,7 @@ public class TicketsSpecificationTest
             Id = Guid.Empty,
             SessionId = Guid.Empty,
             SeatId = Guid.Empty,
-            ClientId = Guid.Empty
+            CustomerDetailsId = Guid.Empty
         };
 
         // Act

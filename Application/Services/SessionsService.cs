@@ -1,7 +1,7 @@
 ﻿using Application.Dtos;
+using Application.Interfaces.IFactory;
 using Application.Interfaces.IServices;
 using Application.Specification;
-using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
@@ -12,26 +12,32 @@ namespace Application.Services;
 public class SessionsService : ISessionsService
 {
     private readonly ISessionsRepository _sessionsRepository;
-    private readonly IMapper _mapper;
     private readonly NotificationContext _notificationContext;
     private readonly SessionsSpecification _sessionsSpecification;
-    
-    public SessionsService(ISessionsRepository sessionsRepository, IMapper mapper, NotificationContext notificationContext)
+    private readonly ISessionsFactory _sessionsFactory;
+
+    public SessionsService(
+        ISessionsRepository sessionsRepository,
+        NotificationContext notificationContext,
+        ISessionsFactory sessionsFactory)
     {
         _sessionsRepository = sessionsRepository;
-        _mapper = mapper;
         _notificationContext = notificationContext;
         _sessionsSpecification = new SessionsSpecification(notificationContext);
+        _sessionsFactory = sessionsFactory;
     }
-
 
     public SessionsReadDto GetById(FilterSessionsById filterSessionsById)
     {
-        SessionsReadDto sessionsReadDto = null;
-        
-        if (!_sessionsSpecification.IsSatisfiedBy(filterSessionsById)) return sessionsReadDto;
-        
-        return _mapper.Map(_sessionsRepository.GetByElement(new FilterByItem { Field = "Id", Value = filterSessionsById.Id, Key = "Equal", Includes = filterSessionsById.Includes }), sessionsReadDto);
+        var session = _sessionsRepository.GetByElement(new FilterByItem
+        {
+            Field = "Id",
+            Value = filterSessionsById.Id,
+            Key = "Equal",
+            Includes = filterSessionsById.Includes
+        });
+
+        return _sessionsFactory.MapToSessionReadDto(session);
     }
 
     public FilterReturn<SessionsReadDto> GetFilter(FilterSessionsTable filter)
@@ -42,7 +48,7 @@ public class SessionsService : ISessionsService
             TotalRegister = filterResult.TotalRegister,
             TotalRegisterFilter = filterResult.TotalRegisterFilter,
             TotalPages = filterResult.TotalPages,
-            ItensList = _mapper.Map<IEnumerable<SessionsReadDto>>(filterResult.ItensList)
+            ItensList = filterResult.ItensList.Select(_sessionsFactory.MapToSessionReadDto)
         };
     }
 
@@ -50,36 +56,46 @@ public class SessionsService : ISessionsService
     {
         SessionsUpdateDto sessionsUpdateDto = null;
 
-        if(!_sessionsSpecification.IsSatisfiedBy(sessionsCreateDto)) return sessionsUpdateDto;
-        
-        if(!_sessionsRepository.ValidateInput(sessionsCreateDto, false)) return sessionsUpdateDto;
-        
-        Sessions sessions = _mapper.Map<Sessions>(sessionsCreateDto);
-        
-        sessionsUpdateDto = _mapper.Map<SessionsUpdateDto>(_sessionsRepository.Add(sessions));
+        if (!_sessionsSpecification.IsSatisfiedBy(sessionsCreateDto)) return sessionsUpdateDto;
+
+        if (!_sessionsRepository.ValidateInput(sessionsCreateDto, false)) return sessionsUpdateDto;
+
+        var session = _sessionsFactory.MapToSession(sessionsCreateDto);
+
+        sessionsUpdateDto = _sessionsFactory.MapToSessionUpdateDto(_sessionsRepository.Add(session));
 
         return sessionsUpdateDto;
     }
 
     public void Update(SessionsUpdateDto sessionsUpdateDto)
     {
-        if(!_sessionsSpecification.IsSatisfiedBy(sessionsUpdateDto)) return;
-        
-        var existingSessions = _sessionsRepository.GetByElement(new FilterByItem { Field = "Id", Value = sessionsUpdateDto.Id, Key = "Equal" });
-        
-        if(!_sessionsRepository.ValidateInput(sessionsUpdateDto, false, existingSessions)) return;
-        
-        var sessions = _mapper.Map<Sessions>(sessionsUpdateDto);
-        
-        _sessionsRepository.Update(sessions);
+        if (!_sessionsSpecification.IsSatisfiedBy(sessionsUpdateDto)) return;
+
+        var existingSession = _sessionsRepository.GetByElement(new FilterByItem
+        {
+            Field = "Id",
+            Value = sessionsUpdateDto.Id,
+            Key = "Equal"
+        });
+
+        if (!_sessionsRepository.ValidateInput(sessionsUpdateDto, false, existingSession)) return;
+
+        var session = _sessionsFactory.MapToSessionFromUpdateDto(sessionsUpdateDto);
+
+        _sessionsRepository.Update(session);
     }
 
     public void Delete(Guid id)
     {
-        Sessions existingSessions = _sessionsRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
-        
-        if (existingSessions is null) return;
-        
-        _sessionsRepository.Delete(existingSessions);
+        var existingSession = _sessionsRepository.GetByElement(new FilterByItem
+        {
+            Field = "Id",
+            Value = id,
+            Key = "Equal"
+        });
+
+        if (existingSession is null) return;
+
+        _sessionsRepository.Delete(existingSession);
     }
 }

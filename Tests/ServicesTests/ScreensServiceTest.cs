@@ -1,149 +1,225 @@
 using Application.Dtos;
+using Application.Interfaces.IFactory;
 using Application.Services;
-using Application.Specification;
-using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
 using Infrastructure.Utilities.FiltersModel;
 using Moq;
+using Xunit;
 
-namespace ServicesTest;
-
-public class ScreensServiceTest
+public class MovieTheatersServiceTest
 {
-    private readonly Mock<IScreensRepository> _screensRepositoryMock;
-    private readonly Mock<IMapper> _mapperMock;
+    private readonly Mock<IMovieTheatersRepository> _movieTheatersRepositoryMock;
+    private readonly Mock<IMovieTheatersFactory> _movieTheatersFactoryMock;
     private readonly Mock<NotificationContext> _notificationContextMock;
-    private readonly ScreensSpecification _screensSpecification;
-    private readonly ScreensService _screensService;
+    private readonly MovieTheatersService _movieTheatersService;
 
-    public ScreensServiceTest()
+    public MovieTheatersServiceTest()
     {
-        _screensRepositoryMock = new Mock<IScreensRepository>();
-        _mapperMock = new Mock<IMapper>();
+        _movieTheatersRepositoryMock = new Mock<IMovieTheatersRepository>();
+        _movieTheatersFactoryMock = new Mock<IMovieTheatersFactory>();
         _notificationContextMock = new Mock<NotificationContext>();
-        _screensSpecification = new ScreensSpecification(_notificationContextMock.Object);
-        _screensService = new ScreensService(
-            _screensRepositoryMock.Object,
-            _mapperMock.Object,
-            _notificationContextMock.Object
+        _movieTheatersService = new MovieTheatersService(
+            _movieTheatersRepositoryMock.Object,
+            _notificationContextMock.Object,
+            _movieTheatersFactoryMock.Object
         );
     }
 
     [Fact]
-    public void GetById_ShouldReturnNull_WhenSpecificationFails()
+    public void GetById_ShouldReturnMovieTheatersReadDto_WhenMovieTheaterExists()
     {
         // Arrange
-        var filter = new FilterScreensById
+        var filter = new FilterMovieTheatersById
         {
             Id = Guid.NewGuid(),
-            Includes = new List<string> { "Theater", "Seats" }.ToArray() // Conversão para array
+            Includes = new[] { "Screens" }
+        };
+        var movieTheater = new MovieTheaters
+        {
+            Id = filter.Id,
+            Name = "Theater 1",
+            TheaterLocationId = Guid.NewGuid(),
+            Screens = new List<Screens>()
+        };
+        var movieTheatersReadDto = new MovieTheatersReadDto
+        {
+            Name = "Theater 1"
         };
 
+        _movieTheatersRepositoryMock
+            .Setup(repo => repo.GetByElement(It.IsAny<FilterByItem>()))
+            .Returns(movieTheater);
+        _movieTheatersFactoryMock
+            .Setup(factory => factory.MapToMovieTheaterReadDto(movieTheater))
+            .Returns(movieTheatersReadDto);
+
         // Act
-        var result = _screensService.GetById(filter);
+        var result = _movieTheatersService.GetById(filter);
 
         // Assert
-        Assert.Null(result);
-        _screensRepositoryMock.Verify(r => r.GetByElement(It.IsAny<FilterByItem>()), Times.Never);
+        Assert.Equal(movieTheatersReadDto, result);
     }
 
     [Fact]
-    public void GetFilter_ShouldReturnFilteredResults()
+    public void GetFilter_ShouldReturnFilteredMovieTheaters()
     {
         // Arrange
-        var filter = new FilterScreensTable
-        {
-            PageNumber = 1,
-            PageSize = 10
-        };
-
-        var filterResult = new FilterReturn<Screens>
+        var filter = new FilterMovieTheatersTable();
+        var filterResult = new FilterReturn<MovieTheaters>
         {
             TotalRegister = 10,
             TotalRegisterFilter = 5,
             TotalPages = 2,
-            ItensList = new List<Screens>
+            ItensList = new List<MovieTheaters>
             {
-                new Screens
+                new MovieTheaters
                 {
                     Id = Guid.NewGuid(),
-                    ScreenNumber = "Screen 1",
-                    SeatingCapacity = 100,
-                    MovieTheaterId = Guid.NewGuid() // Propriedade obrigatória inicializada
+                    Name = "Theater 1",
+                    TheaterLocationId = Guid.NewGuid(),
+                    Screens = new List<Screens>()
                 }
             }
         };
 
-        _screensRepositoryMock.Setup(r => r.GetFilter(filter)).Returns(filterResult);
-        _mapperMock.Setup(m => m.Map<IEnumerable<ScreensReadDto>>(filterResult.ItensList))
-            .Returns(new List<ScreensReadDto>());
+        _movieTheatersRepositoryMock
+            .Setup(repo => repo.GetFilter(filter))
+            .Returns(filterResult);
+        _movieTheatersFactoryMock
+            .Setup(factory => factory.MapToMovieTheaterReadDto(It.IsAny<MovieTheaters>()))
+            .Returns(new MovieTheatersReadDto
+            {
+                Name = "Theater 1"
+            });
 
         // Act
-        var result = _screensService.GetFilter(filter);
+        var result = _movieTheatersService.GetFilter(filter);
 
         // Assert
         Assert.NotNull(result);
         Assert.Equal(filterResult.TotalRegister, result.TotalRegister);
-        _screensRepositoryMock.Verify(r => r.GetFilter(filter), Times.Once);
+        Assert.Equal(filterResult.TotalRegisterFilter, result.TotalRegisterFilter);
     }
 
-
     [Fact]
-    public void Add_ShouldReturnNull_WhenSpecificationFails()
+    public void Add_ShouldReturnMovieTheatersUpdateDto_WhenValidInput()
     {
         // Arrange
-        var createDto = new ScreensCreateDto
+        var movieTheatersCreateDto = new MovieTheatersCreateDto
         {
-            ScreenNumber = "Screen 1",
-            SeatingCapacity = 100,
-            MovieTheaterId = Guid.NewGuid()
+            Name = "Theater 1",
+            TheaterLocationId = Guid.NewGuid()
         };
-
-        _screensRepositoryMock.Setup(r => r.ValidateInput(createDto, false, null)).Returns(false);
-
-        // Act
-        var result = _screensService.Add(createDto);
-
-        // Assert
-        Assert.Null(result);
-        _screensRepositoryMock.Verify(r => r.Add(It.IsAny<Screens>()), Times.Never);
-    }
-
-    [Fact]
-    public void Update_ShouldNotCallRepository_WhenSpecificationFails()
-    {
-        // Arrange
-        var updateDto = new ScreensUpdateDto
+        var movieTheater = new MovieTheaters
         {
             Id = Guid.NewGuid(),
-            ScreenNumber = "Screen 2",
-            SeatingCapacity = 120,
-            MovieTheaterId = Guid.NewGuid()
+            Name = "Theater 1",
+            TheaterLocationId = movieTheatersCreateDto.TheaterLocationId,
+            Screens = new List<Screens>()
+        };
+        var movieTheatersUpdateDto = new MovieTheatersUpdateDto
+        {
+            Id = Guid.NewGuid(),
+            Name = "Theater 1",
+            TheaterLocationId = movieTheatersCreateDto.TheaterLocationId,
+            
         };
 
-        _screensRepositoryMock.Setup(r => r.ValidateInput(updateDto, true, It.IsAny<Screens>())).Returns(false);
+        _movieTheatersRepositoryMock
+            .Setup(repo => repo.ValidateInput(movieTheatersCreateDto, false, null))
+            .Returns(true);
+        _movieTheatersFactoryMock
+            .Setup(factory => factory.MapToMovieTheater(movieTheatersCreateDto))
+            .Returns(movieTheater);
+        _movieTheatersRepositoryMock
+            .Setup(repo => repo.Add(movieTheater))
+            .Returns(movieTheater);
+        _movieTheatersFactoryMock
+            .Setup(factory => factory.MapToMovieTheaterUpdateDto(movieTheater))
+            .Returns(movieTheatersUpdateDto);
 
         // Act
-        _screensService.Update(updateDto);
+        var result = _movieTheatersService.Add(movieTheatersCreateDto);
 
         // Assert
-        _screensRepositoryMock.Verify(r => r.Update(It.IsAny<Screens>()), Times.Never);
+        Assert.Equal(movieTheatersUpdateDto.Name, result.Name);
     }
 
     [Fact]
-    public void Delete_ShouldNotCallRepository_WhenScreenNotFound()
+    public void Update_ShouldCallRepositoryUpdate_WhenValidInput()
+    {
+        // Arrange
+        var movieTheatersUpdateDto = new MovieTheatersUpdateDto
+        {
+            Id = Guid.NewGuid(),
+            Name = "Theater 1",
+            TheaterLocationId = Guid.NewGuid(),
+        };
+        var movieTheater = new MovieTheaters
+        {
+            Id = movieTheatersUpdateDto.Id,
+            Name = "Theater 1",
+            TheaterLocationId = Guid.NewGuid(),
+            Screens = new List<Screens>()
+        };
+
+        _movieTheatersRepositoryMock
+            .Setup(repo => repo.GetByElement(It.IsAny<FilterByItem>()))
+            .Returns(movieTheater);
+        _movieTheatersRepositoryMock
+            .Setup(repo => repo.ValidateInput(movieTheatersUpdateDto, true, movieTheater))
+            .Returns(true);
+        _movieTheatersFactoryMock
+            .Setup(factory => factory.MapToMovieTheaterFromUpdateDto(movieTheatersUpdateDto))
+            .Returns(movieTheater);
+
+        // Act
+        _movieTheatersService.Update(movieTheatersUpdateDto);
+
+        // Assert
+        _movieTheatersRepositoryMock.Verify(repo => repo.Update(movieTheater), Times.Once);
+    }
+
+    [Fact]
+    public void Delete_ShouldCallRepositoryDelete_WhenMovieTheaterExists()
+    {
+        // Arrange
+        var id = Guid.NewGuid();
+        var movieTheater = new MovieTheaters
+        {
+            Id = id,
+            Name = "Theater 1",
+            TheaterLocationId = Guid.NewGuid(),
+            Screens = new List<Screens>()
+        };
+
+        _movieTheatersRepositoryMock
+            .Setup(repo => repo.GetByElement(It.IsAny<FilterByItem>()))
+            .Returns(movieTheater);
+
+        // Act
+        _movieTheatersService.Delete(id);
+
+        // Assert
+        _movieTheatersRepositoryMock.Verify(repo => repo.Delete(movieTheater), Times.Once);
+    }
+
+    [Fact]
+    public void Delete_ShouldNotCallRepositoryDelete_WhenMovieTheaterDoesNotExist()
     {
         // Arrange
         var id = Guid.NewGuid();
 
-        _screensRepositoryMock.Setup(r => r.GetByElement(It.IsAny<FilterByItem>())).Returns((Screens)null);
+        _movieTheatersRepositoryMock
+            .Setup(repo => repo.GetByElement(It.IsAny<FilterByItem>()))
+            .Returns((MovieTheaters)null);
 
         // Act
-        _screensService.Delete(id);
+        _movieTheatersService.Delete(id);
 
         // Assert
-        _screensRepositoryMock.Verify(r => r.Delete(It.IsAny<Screens>()), Times.Never);
+        _movieTheatersRepositoryMock.Verify(repo => repo.Delete(It.IsAny<MovieTheaters>()), Times.Never);
     }
 }

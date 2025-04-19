@@ -26,7 +26,7 @@ public class TicketsSpecification
     {
         return ValidateSessionId(createDto.SessionId)
             && ValidateSeatId(createDto.SeatId)
-            && ValidateClientId(createDto.ClientId);
+            && ValidateClientId(createDto.CustomerDetailsId);
     }
 
     public bool ValidateUpdateDto(TicketsUpdateDto updateDto)
@@ -34,7 +34,7 @@ public class TicketsSpecification
         return ValidateId(updateDto.Id)
             && ValidateSessionId(updateDto.SessionId)
             && ValidateSeatId(updateDto.SeatId)
-            && ValidateClientId(updateDto.ClientId);
+            && ValidateClientId(updateDto.CustomerDetailsId);
     }
 
     private bool ValidateId(Guid id)

@@ -1,7 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Application.Dtos;
+using Application.Interfaces.IFactory;
 using Application.Services;
-using Application.Specification;
-using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Infrastructure.Interfaces.IRepositories;
@@ -10,144 +12,135 @@ using Infrastructure.Utilities.FiltersModel;
 using Moq;
 using Xunit;
 
-namespace ServicesTest;
-
-public class SessionsServiceTest
+public class SessionsServiceTests
 {
     private readonly Mock<ISessionsRepository> _sessionsRepositoryMock;
-    private readonly Mock<IMapper> _mapperMock;
-    private readonly Mock<NotificationContext> _notificationContextMock;
-    private readonly SessionsSpecification _sessionsSpecification;
+    private readonly Mock<ISessionsFactory> _sessionsFactoryMock;
+    private readonly NotificationContext _notificationContext;
     private readonly SessionsService _sessionsService;
 
-    public SessionsServiceTest()
+    public SessionsServiceTests()
     {
         _sessionsRepositoryMock = new Mock<ISessionsRepository>();
-        _mapperMock = new Mock<IMapper>();
-        _notificationContextMock = new Mock<NotificationContext>();
-        _sessionsSpecification = new SessionsSpecification(_notificationContextMock.Object);
+        _sessionsFactoryMock = new Mock<ISessionsFactory>();
+        _notificationContext = new NotificationContext();
         _sessionsService = new SessionsService(
             _sessionsRepositoryMock.Object,
-            _mapperMock.Object,
-            _notificationContextMock.Object
+            _notificationContext,
+            _sessionsFactoryMock.Object
         );
     }
 
     [Fact]
-    public void GetById_ShouldReturnNull_WhenSpecificationFails()
+    public void GetById_ShouldReturnSessionReadDto_WhenSessionExists()
     {
         // Arrange
-        var filter = new FilterSessionsById
+        var sessionId = Guid.NewGuid();
+        var session = new Sessions
         {
-            Id = Guid.NewGuid(),
-            Includes = new List<string> { "Film", "Tickets" }.ToArray()
+            Id = sessionId,
+            SessionTime = DateTime.Now,
+            FilmId = Guid.NewGuid(),
+            FilmAudioOption = FilmAudioOption.Dubbed,
+            FilmFormat = FilmFormat.D2
         };
+        var sessionReadDto = new SessionsReadDto
+        {
+            Id = sessionId,
+            SessionTime = session.SessionTime,
+            FilmId = session.FilmId
+        };
+
+        _sessionsRepositoryMock
+            .Setup(repo => repo.GetByElement(It.IsAny<FilterByItem>()))
+            .Returns(session);
+
+        _sessionsFactoryMock
+            .Setup(factory => factory.MapToSessionReadDto(session))
+            .Returns(sessionReadDto);
+
+        var filter = new FilterSessionsById { Id = sessionId };
 
         // Act
         var result = _sessionsService.GetById(filter);
 
         // Assert
-        Assert.Null(result);
-        _sessionsRepositoryMock.Verify(r => r.GetByElement(It.IsAny<FilterByItem>()), Times.Never);
+        Assert.NotNull(result);
+        Assert.Equal(sessionId, result.Id);
+        Assert.Equal(session.SessionTime, result.SessionTime);
     }
 
     [Fact]
-    public void GetFilter_ShouldReturnFilteredResults()
+    public void Add_ShouldReturnSessionUpdateDto_WhenInputIsValid()
     {
         // Arrange
-        var filter = new FilterSessionsTable
+        var sessionsCreateDto = new SessionsCreateDto
         {
-            PageNumber = 1,
-            PageSize = 10
+            SessionTime = DateTime.Now,
+            FilmId = Guid.NewGuid(),
+            FilmAudioOption = FilmAudioOption.Dubbed,
+            FilmFormat = FilmFormat.D2
+        };
+        var session = new Sessions
+        {
+            Id = Guid.NewGuid(),
+            SessionTime = sessionsCreateDto.SessionTime,
+            FilmId = sessionsCreateDto.FilmId,
+            FilmAudioOption = sessionsCreateDto.FilmAudioOption,
+            FilmFormat = sessionsCreateDto.FilmFormat
+        };
+        var sessionsUpdateDto = new SessionsUpdateDto
+        {
+            Id = session.Id,
+            SessionTime = session.SessionTime,
+            FilmId = session.FilmId
         };
 
-        var filterResult = new FilterReturn<Sessions>
-        {
-            TotalRegister = 10,
-            TotalRegisterFilter = 5,
-            TotalPages = 2,
-            ItensList = new List<Sessions>
-            {
-                new Sessions
-                {
-                    Id = Guid.NewGuid(),
-                    SessionTime = DateTime.Now,
-                    FilmId = Guid.NewGuid(),
-                    FilmAudioOption = FilmAudioOption.Dubbed,
-                    FilmFormat = FilmFormat.Vip
-                }
-            }
-        };
+        _sessionsRepositoryMock
+            .Setup(repo => repo.ValidateInput(sessionsCreateDto, false, null))
+            .Returns(true);
 
-        _sessionsRepositoryMock.Setup(r => r.GetFilter(filter)).Returns(filterResult);
-        _mapperMock.Setup(m => m.Map<IEnumerable<SessionsReadDto>>(filterResult.ItensList))
-            .Returns(new List<SessionsReadDto>());
+        _sessionsFactoryMock
+            .Setup(factory => factory.MapToSession(sessionsCreateDto))
+            .Returns(session);
+
+        _sessionsRepositoryMock
+            .Setup(repo => repo.Add(session))
+            .Returns(session);
+
+        _sessionsFactoryMock
+            .Setup(factory => factory.MapToSessionUpdateDto(session))
+            .Returns(sessionsUpdateDto);
 
         // Act
-        var result = _sessionsService.GetFilter(filter);
+        var result = _sessionsService.Add(sessionsCreateDto);
 
         // Assert
         Assert.NotNull(result);
-        Assert.Equal(filterResult.TotalRegister, result.TotalRegister);
-        _sessionsRepositoryMock.Verify(r => r.GetFilter(filter), Times.Once);
+        Assert.Equal(session.Id, result.Id);
+        Assert.Equal(session.SessionTime, result.SessionTime);
     }
 
     [Fact]
-    public void Add_ShouldReturnNull_WhenSpecificationFails()
+    public void Delete_ShouldCallRepositoryDelete_WhenSessionExists()
     {
         // Arrange
-        var createDto = new SessionsCreateDto
+        var sessionId = Guid.NewGuid();
+        var session = new Sessions
         {
+            Id = sessionId,
             SessionTime = DateTime.Now,
-            FilmId = Guid.NewGuid(),
-            FilmAudioOption = FilmAudioOption.Dubbed,
-            FilmFormat = FilmFormat.Vip
+            FilmId = Guid.NewGuid()
         };
 
-        _sessionsRepositoryMock.Setup(r => r.ValidateInput(createDto, false, null)).Returns(false);
+        _sessionsRepositoryMock
+            .Setup(repo => repo.GetByElement(It.IsAny<FilterByItem>()))
+            .Returns(session);
 
         // Act
-        var result = _sessionsService.Add(createDto);
+        _sessionsService.Delete(sessionId);
 
         // Assert
-        Assert.Null(result);
-        _sessionsRepositoryMock.Verify(r => r.Add(It.IsAny<Sessions>()), Times.Never);
-    }
-
-    [Fact]
-    public void Update_ShouldNotCallRepository_WhenSpecificationFails()
-    {
-        // Arrange
-        var updateDto = new SessionsUpdateDto
-        {
-            Id = Guid.NewGuid(),
-            SessionTime = DateTime.Now,
-            FilmId = Guid.NewGuid(),
-            FilmAudioOption = FilmAudioOption.Dubbed,
-            FilmFormat = FilmFormat.D3
-        };
-
-        _sessionsRepositoryMock.Setup(r => r.ValidateInput(updateDto, false, It.IsAny<Sessions>())).Returns(false);
-
-        // Act
-        _sessionsService.Update(updateDto);
-
-        // Assert
-        _sessionsRepositoryMock.Verify(r => r.Update(It.IsAny<Sessions>()), Times.Never);
-    }
-
-    [Fact]
-    public void Delete_ShouldNotCallRepository_WhenSessionNotFound()
-    {
-        // Arrange
-        var id = Guid.NewGuid();
-
-        _sessionsRepositoryMock.Setup(r => r.GetByElement(It.IsAny<FilterByItem>())).Returns((Sessions)null);
-
-        // Act
-        _sessionsService.Delete(id);
-
-        // Assert
-        _sessionsRepositoryMock.Verify(r => r.Delete(It.IsAny<Sessions>()), Times.Never);
+        _sessionsRepositoryMock.Verify(repo => repo.Delete(session), Times.Once);
     }
 }

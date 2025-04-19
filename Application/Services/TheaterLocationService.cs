@@ -1,7 +1,7 @@
 ﻿using Application.Dtos;
+using Application.Interfaces.IFactory;
 using Application.Interfaces.IServices;
 using Application.Specification;
-using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
@@ -12,21 +12,32 @@ namespace Application.Services;
 public class TheaterLocationService : ITheaterLocationService
 {
     private readonly ITheaterLocationRepository _theaterLocationRepository;
-    private readonly IMapper _mapper;
     private readonly NotificationContext _notifierContext;
     private readonly TheaterLocationSpecification _theaterLocationSpecification;
+    private readonly ITheaterLocationFactory _theaterLocationFactory;
 
-    public TheaterLocationService(ITheaterLocationRepository theaterLocationRepository, IMapper mapper, NotificationContext notifierContext)
+    public TheaterLocationService(
+        ITheaterLocationRepository theaterLocationRepository,
+        NotificationContext notifierContext,
+        ITheaterLocationFactory theaterLocationFactory)
     {
         _theaterLocationRepository = theaterLocationRepository;
-        _mapper = mapper;
         _notifierContext = notifierContext;
         _theaterLocationSpecification = new TheaterLocationSpecification(notifierContext);
+        _theaterLocationFactory = theaterLocationFactory;
     }
 
     public TheaterLocationReadDto GetById(FilterTheaterLocationById filterTheaterLocationById)
     {
-        return _mapper.Map<TheaterLocationReadDto>(_theaterLocationRepository.GetByElement(new FilterByItem { Field = "Id", Value = filterTheaterLocationById.Id, Key = "Equal", Includes = filterTheaterLocationById.Includes }));
+        var theaterLocation = _theaterLocationRepository.GetByElement(new FilterByItem
+        {
+            Field = "Id",
+            Value = filterTheaterLocationById.Id,
+            Key = "Equal",
+            Includes = filterTheaterLocationById.Includes
+        });
+
+        return _theaterLocationFactory.MapToTheaterLocationReadDto(theaterLocation);
     }
 
     public FilterReturn<TheaterLocationReadDto> GetFilter(FilterTheaterLocationTable filter)
@@ -37,7 +48,7 @@ public class TheaterLocationService : ITheaterLocationService
             TotalRegister = filterResult.TotalRegister,
             TotalRegisterFilter = filterResult.TotalRegisterFilter,
             TotalPages = filterResult.TotalPages,
-            ItensList = _mapper.Map<IEnumerable<TheaterLocationReadDto>>(filterResult.ItensList)
+            ItensList = filterResult.ItensList.Select(_theaterLocationFactory.MapToTheaterLocationReadDto)
         };
     }
 
@@ -49,28 +60,38 @@ public class TheaterLocationService : ITheaterLocationService
 
         if (_theaterLocationRepository.GetByElement(new FilterByItem { Field = "Street", Value = theaterLocationCreateDto.Street, Key = "Equal" }) is not null) return theaterLocationUpdateDto;
 
-        TheaterLocation theaterLocation = _mapper.Map<TheaterLocation>(theaterLocationCreateDto);
+        var theaterLocation = _theaterLocationFactory.MapToTheaterLocation(theaterLocationCreateDto);
         theaterLocation = _theaterLocationRepository.Add(theaterLocation);
 
-        return _mapper.Map(theaterLocation, theaterLocationUpdateDto);
+        return _theaterLocationFactory.MapToTheaterLocationUpdateDto(theaterLocation);
     }
 
     public void Update(TheaterLocationUpdateDto theaterLocationUpdateDto)
     {
         if (!_theaterLocationSpecification.IsSatisfiedBy(theaterLocationUpdateDto)) return;
 
-        var theaterLocation = _theaterLocationRepository.GetByElement(new FilterByItem {Field = "Id", Value = theaterLocationUpdateDto.Id, Key = "Equal"});
+        var theaterLocation = _theaterLocationRepository.GetByElement(new FilterByItem
+        {
+            Field = "Id",
+            Value = theaterLocationUpdateDto.Id,
+            Key = "Equal"
+        });
 
-        if (_notifierContext.HasNotifications()) return; 
-        
-        _mapper.Map(theaterLocationUpdateDto, theaterLocation);
+        if (_notifierContext.HasNotifications()) return;
 
-        _theaterLocationRepository.Update(theaterLocation);
+        var updatedTheaterLocation = _theaterLocationFactory.MapToTheaterLocationFromUpdateDto(theaterLocationUpdateDto);
+
+        _theaterLocationRepository.Update(updatedTheaterLocation);
     }
 
     public void Delete(Guid id)
     {
-        TheaterLocation theaterLocation = _theaterLocationRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
+        var theaterLocation = _theaterLocationRepository.GetByElement(new FilterByItem
+        {
+            Field = "Id",
+            Value = id,
+            Key = "Equal"
+        });
 
         if (theaterLocation is null) return;
 

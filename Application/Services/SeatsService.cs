@@ -1,7 +1,7 @@
 ﻿using Application.Dtos;
+using Application.Interfaces.IFactory;
 using Application.Interfaces.IServices;
 using Application.Specification;
-using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
@@ -12,27 +12,34 @@ namespace Application.Services;
 public class SeatsService : ISeatsService
 {
     private readonly ISeatsRepository _seatsRepository;
-    private readonly IMapper _mapper;
     private readonly NotificationContext _notificationContext;
     private readonly SeatsSpecification _seatsSpecification;
+    private readonly ISeatsFactory _seatsFactory;
 
-    public SeatsService(ISeatsRepository seatsRepository, IMapper mapper ,NotificationContext notificationContext)
+    public SeatsService(
+        ISeatsRepository seatsRepository,
+        NotificationContext notificationContext,
+        ISeatsFactory seatsFactory)
     {
         _seatsRepository = seatsRepository;
-        _mapper = mapper;
         _notificationContext = notificationContext;
         _seatsSpecification = new SeatsSpecification(notificationContext);
+        _seatsFactory = seatsFactory;
     }
 
     public SeatsReadDto GetById(FilterSeatsById filterSeatsById)
     {
-        SeatsReadDto seatsReadDto = null;
+        var seat = _seatsRepository.GetByElement(new FilterByItem
+        {
+            Field = "Id",
+            Value = filterSeatsById.Id,
+            Key = "Equal",
+            Includes = filterSeatsById.Includes
+        });
 
-        if (!_seatsSpecification.IsSatisfiedBy(filterSeatsById)) return seatsReadDto;
-
-        return _mapper.Map(_seatsRepository.GetByElement(new FilterByItem { Field = "Id", Value = filterSeatsById.Id, Key = "Equal", Includes = filterSeatsById.Includes }), seatsReadDto);
+        return _seatsFactory.MapToSeatReadDto(seat);
     }
-    
+
     public FilterReturn<SeatsReadDto> GetFilter(FilterSeatsTable filter)
     {
         var filterResult = _seatsRepository.GetFilter(filter);
@@ -41,21 +48,21 @@ public class SeatsService : ISeatsService
             TotalRegister = filterResult.TotalRegister,
             TotalRegisterFilter = filterResult.TotalRegisterFilter,
             TotalPages = filterResult.TotalPages,
-            ItensList = _mapper.Map<IEnumerable<SeatsReadDto>>(filterResult.ItensList)
+            ItensList = filterResult.ItensList.Select(_seatsFactory.MapToSeatReadDto)
         };
     }
-    
+
     public SeatsUpdateDto Add(SeatsCreateDto seatsCreateDto)
     {
         SeatsUpdateDto seatsUpdateDto = null;
 
         if (!_seatsSpecification.IsSatisfiedBy(seatsCreateDto)) return seatsUpdateDto;
-        
-        if(!_seatsRepository.ValidateInput(seatsCreateDto, false)) return seatsUpdateDto;
 
-        Seats seats = _mapper.Map<Seats>(seatsCreateDto);
-        
-        seatsUpdateDto = _mapper.Map<SeatsUpdateDto>(_seatsRepository.Add(seats));
+        if (!_seatsRepository.ValidateInput(seatsCreateDto, false)) return seatsUpdateDto;
+
+        var seat = _seatsFactory.MapToSeat(seatsCreateDto);
+
+        seatsUpdateDto = _seatsFactory.MapToSeatUpdateDto(_seatsRepository.Add(seat));
 
         return seatsUpdateDto;
     }
@@ -64,21 +71,31 @@ public class SeatsService : ISeatsService
     {
         if (!_seatsSpecification.IsSatisfiedBy(seatsUpdateDto)) return;
 
-        var existingSeatsUpdate = _seatsRepository.GetByElement(new FilterByItem { Field = "Id", Value = seatsUpdateDto.Id, Key = "Equal" });
+        var existingSeat = _seatsRepository.GetByElement(new FilterByItem
+        {
+            Field = "Id",
+            Value = seatsUpdateDto.Id,
+            Key = "Equal"
+        });
 
-        if (!_seatsRepository.ValidateInput(seatsUpdateDto, true, existingSeatsUpdate)) return;
+        if (!_seatsRepository.ValidateInput(seatsUpdateDto, true, existingSeat)) return;
 
-        var seats = _mapper.Map<Seats>(seatsUpdateDto);
+        var seat = _seatsFactory.MapToSeatFromUpdateDto(seatsUpdateDto);
 
-        _seatsRepository.Update(seats);
+        _seatsRepository.Update(seat);
     }
 
     public void Delete(Guid id)
     {
-        Seats existingSeats = _seatsRepository.GetByElement(new FilterByItem { Field = "Id", Value = id, Key = "Equal" });
-        
-        if (existingSeats is null) return;
-        
-        _seatsRepository.Delete(existingSeats);
+        var existingSeat = _seatsRepository.GetByElement(new FilterByItem
+        {
+            Field = "Id",
+            Value = id,
+            Key = "Equal"
+        });
+
+        if (existingSeat is null) return;
+
+        _seatsRepository.Delete(existingSeat);
     }
 }
