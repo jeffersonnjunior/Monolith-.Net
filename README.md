@@ -65,6 +65,12 @@ Define o contexto de banco de dados, responsável pela comunicação com o armaz
 ### DependencyInjection  
 Configuração dos serviços de injeção de dependência para garantir a resolução correta das classes na camada infrastructure.
 
+### FiltersModels  
+Contém os modelos utilizados para aplicação de filtros em consultas, facilitando a criação de critérios dinâmicos.
+
+### FunctionsDatabase  
+Define funções personalizadas para serem usadas no Entity Framework, otimizando operações no banco de dados.
+
 ### Interfaces  
 Interfaces que definem as operações e métodos utilizados na camada infrastructure, garantindo flexibilidade e desacoplamento.
 
@@ -80,9 +86,15 @@ Implementa o design pattern Notification, centralizando a configuração e uso d
 ### Repositories  
 Implementa os padrões de repositório para acesso e manipulação de dados no banco.
 
-### Utilities  
-Contém classes e métodos auxiliares que suportam funcionalidades específicas da camada infrastructure.
 
+## Tests
+Contém todos os testes unitários do projeto, desenvolvidos utilizando o framework xUnit para validar as funcionalidades de forma isolada.
 
+## .github/workflows 
+Contém as configurações para os pipelines de CI/CD do projeto, automatizando processos como build, execução de testes e criação de imagens Docker.
+![Captura de tela de 2025-04-21 19-35-07](https://github.com/user-attachments/assets/9e1d9c43-d55f-4f96-b7b0-5026ffc855db)
+
+## Diagrama do Banco
+![__EFMigrationsHistory](https://github.com/user-attachments/assets/c64e1ed6-cdba-4dd0-bf70-2fefad897c8d)
 
 
