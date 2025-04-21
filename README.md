@@ -90,3 +90,7 @@ Implementa os padrões de repositório para acesso e manipulação de dados no b
 ## Tests
 Contém todos os testes unitários do projeto, desenvolvidos utilizando o framework xUnit para validar as funcionalidades de forma isolada.
 
+## Diagrama do Banco
+![__EFMigrationsHistory](https://github.com/user-attachments/assets/c64e1ed6-cdba-4dd0-bf70-2fefad897c8d)
+
+
