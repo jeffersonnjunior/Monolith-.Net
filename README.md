@@ -40,7 +40,7 @@ Definição dos Data Transfer Objects (DTOs) para transferência de dados entre 
 Mapeamento entre as entidades e os DTOs, facilitando a conversão de dados para comunicação entre as camadas.
 
 ### Interfaces
-Contratos que definem as operações e métodos utilizados na camada application, garantindo flexibilidade e desacoplamento.
+Interfaces que definem as operações e métodos utilizados na camada application, garantindo flexibilidade e desacoplamento.
 
 ### Services
 Implementação das regras de negócio, onde são realizadas as operações principais da aplicação.
