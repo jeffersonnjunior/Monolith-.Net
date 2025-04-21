@@ -88,5 +88,5 @@ Implementa os padrões de repositório para acesso e manipulação de dados no b
 
 
 ## Tests
-### Contém todos os testes unitários do projeto, desenvolvidos utilizando o framework xUnit para validar as funcionalidades de forma isolada.
+Contém todos os testes unitários do projeto, desenvolvidos utilizando o framework xUnit para validar as funcionalidades de forma isolada.
 
