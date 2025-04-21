@@ -1,7 +1,7 @@
 # Documentação do Projeto
 
 ## Regra de Negócio
-Projeto para gerenciamento de cinema, com funcionalidades como **compra de ingressos** e **gestão de salas**, incluindo organização de assentos e sessões de filmes.
+Projeto para gerenciamento de cinema, com funcionalidades como compra de ingressos e gestão de salas, incluindo organização de assentos e sessões de filmes.
 
 ## Tecnologias
 - C#, ASP.NET Core, PostgreSQL, Entity Framework, xUnit, Docker
@@ -10,4 +10,4 @@ Projeto para gerenciamento de cinema, com funcionalidades como **compra de ingre
 - DDD, SOLID, Factory, Notification  
 
 ## Arquitetura
-Monolítica com **Clean Architecture**, garantindo modularidade e separação de responsabilidades.
+Monolítica com Clean Architecture, garantindo modularidade e separação de responsabilidades.
