@@ -90,6 +90,10 @@ Implementa os padrões de repositório para acesso e manipulação de dados no b
 ## Tests
 Contém todos os testes unitários do projeto, desenvolvidos utilizando o framework xUnit para validar as funcionalidades de forma isolada.
 
+## .github/workflows 
+Contém as configurações para os pipelines de CI/CD do projeto, automatizando processos como build, execução de testes e criação de imagens Docker.
+![Captura de tela de 2025-04-21 19-35-07](https://github.com/user-attachments/assets/9e1d9c43-d55f-4f96-b7b0-5026ffc855db)
+
 ## Diagrama do Banco
 ![__EFMigrationsHistory](https://github.com/user-attachments/assets/c64e1ed6-cdba-4dd0-bf70-2fefad897c8d)
 
