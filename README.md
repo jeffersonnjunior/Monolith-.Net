@@ -75,7 +75,7 @@ Gerencia o mapeamento entre as entidades do domínio e as tabelas do banco de da
 Armazena as migrações para versionamento e atualização da estrutura do banco de dados.
 
 ### Notifications  
-Centraliza o envio e tratamento de notificações relacionadas à infraestrutura.
+Implementa o design pattern Notification, centralizando a configuração e uso de notificações para permitir a criação de exceções personalizadas e consistentes em todo o projeto.
 
 ### Repositories  
 Implementa os padrões de repositório para acesso e manipulação de dados no banco.
