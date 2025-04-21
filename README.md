@@ -31,7 +31,7 @@ Contém a configuração de versionamento, permitindo gerenciar diferentes vers�
 ## Camada Application
 
 ### DependencyInjection
-Configuração dos serviços de injeção de dependência para garantir a resolução correta das classes na camada de aplicação.
+Configuração dos serviços de injeção de dependência para garantir a resolução correta das classes na camada application.
 
 ### Dtos
 Definição dos Data Transfer Objects (DTOs) para transferência de dados entre as camadas de forma estruturada e segura.
@@ -40,7 +40,7 @@ Definição dos Data Transfer Objects (DTOs) para transferência de dados entre 
 Mapeamento entre as entidades e os DTOs, facilitando a conversão de dados para comunicação entre as camadas.
 
 ### Interfaces
-Contratos que definem as operações e métodos utilizados na camada de aplicação, garantindo flexibilidade e desacoplamento.
+Contratos que definem as operações e métodos utilizados na camada application, garantindo flexibilidade e desacoplamento.
 
 ### Services
 Implementação das regras de negócio, onde são realizadas as operações principais da aplicação.
@@ -55,6 +55,16 @@ Agrupa as entidades que representam os objetos principais de negócio, com suas 
 
 ### Enums
 Fornece listas de valores fixos usados para categorizar e organizar informações de forma consistente no sistema.
+
+
+## Camada Infrastructure
+
+### Context
+
+
+### DependencyInjection
+
+### Interfaces
 
 
 
