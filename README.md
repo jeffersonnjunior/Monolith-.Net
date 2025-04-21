@@ -87,3 +87,6 @@ Implementa o design pattern Notification, centralizando a configuração e uso d
 Implementa os padrões de repositório para acesso e manipulação de dados no banco.
 
 
+## Tests
+### Contém todos os testes unitários do projeto, desenvolvidos utilizando o framework xUnit para validar as funcionalidades de forma isolada.
+
