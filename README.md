@@ -59,12 +59,30 @@ Fornece listas de valores fixos usados para categorizar e organizar informaçõe
 
 ## Camada Infrastructure
 
-### Context
+### Context  
+Define o contexto de banco de dados, responsável pela comunicação com o armazenamento e o mapeamento das entidades.
 
+### DependencyInjection  
+Configuração dos serviços de injeção de dependência para garantir a resolução correta das classes na camada infrastructure.
 
-### DependencyInjection
+### Interfaces  
+Interfaces que definem as operações e métodos utilizados na camada infrastructure, garantindo flexibilidade e desacoplamento.
 
-### Interfaces
+### Mappings  
+Gerencia o mapeamento entre as entidades do domínio e as tabelas do banco de dados.
+
+### Migrations  
+Armazena as migrações para versionamento e atualização da estrutura do banco de dados.
+
+### Notifications  
+Centraliza o envio e tratamento de notificações relacionadas à infraestrutura.
+
+### Repositories  
+Implementa os padrões de repositório para acesso e manipulação de dados no banco.
+
+### Utilities  
+Contém classes e métodos auxiliares que suportam funcionalidades específicas da camada infrastructure.
+
 
 
 
