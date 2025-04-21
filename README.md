@@ -14,7 +14,7 @@ Monolítica com Clean Architecture, garantindo modularidade e separação de res
 
 # Separação do Projeto
 
-## Camada API
+## Camada Api
 
 ### Controllers
 Contém as controllers responsáveis por gerenciar as requisições e respostas da aplicação, servindo como ponto de entrada para os endpoints.
@@ -27,4 +27,25 @@ Configuração exclusiva para políticas de CORS, permitindo controlar o acesso 
 
 ### Versioning
 Contém a configuração de versionamento, permitindo gerenciar diferentes versões da API de forma organizada.
+
+## Camada Application
+
+### DependencyInjection
+Configuração dos serviços de injeção de dependência para garantir a resolução correta das classes na camada de aplicação.
+
+### Dtos
+Definição dos Data Transfer Objects (DTOs) para transferência de dados entre as camadas de forma estruturada e segura.
+
+### Factory
+Mapeamento entre as entidades e os DTOs, facilitando a conversão de dados para comunicação entre as camadas.
+
+### Interfaces
+Contratos que definem as operações e métodos utilizados na camada de aplicação, garantindo flexibilidade e desacoplamento.
+
+### Services
+Implementação das regras de negócio, onde são realizadas as operações principais da aplicação.
+
+### Specification
+Validação e tratamento inicial dos dados, assegurando que atendem aos critérios definidos antes de seguir para o processamento.
+
 
