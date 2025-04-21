@@ -48,4 +48,13 @@ Implementação das regras de negócio, onde são realizadas as operações prin
 ### Specification
 Validação e tratamento inicial dos dados, assegurando que atendem aos critérios definidos antes de seguir para o processamento.
 
+## Camada Domain
+
+### Entities
+Agrupa as entidades que representam os objetos principais de negócio, com suas propriedades e comportamentos.
+
+### Enums
+Fornece listas de valores fixos usados para categorizar e organizar informações de forma consistente no sistema.
+
+
 
