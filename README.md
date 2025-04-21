@@ -65,6 +65,12 @@ Define o contexto de banco de dados, responsável pela comunicação com o armaz
 ### DependencyInjection  
 Configuração dos serviços de injeção de dependência para garantir a resolução correta das classes na camada infrastructure.
 
+### FiltersModels  
+Contém os modelos utilizados para aplicação de filtros em consultas, facilitando a criação de critérios dinâmicos.
+
+### FunctionsDatabase  
+Define funções personalizadas para serem usadas no Entity Framework, otimizando operações no banco de dados.
+
 ### Interfaces  
 Interfaces que definem as operações e métodos utilizados na camada infrastructure, garantindo flexibilidade e desacoplamento.
 
@@ -79,10 +85,5 @@ Implementa o design pattern Notification, centralizando a configuração e uso d
 
 ### Repositories  
 Implementa os padrões de repositório para acesso e manipulação de dados no banco.
-
-### Utilities  
-Contém classes e métodos auxiliares que suportam funcionalidades específicas da camada infrastructure.
-
-
 
 
