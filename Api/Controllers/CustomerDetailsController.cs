@@ -2,7 +2,7 @@
 using Application.Interfaces.IServices;
 using Infrastructure.Notifications;
 using Microsoft.AspNetCore.Mvc;
-using Infrastructure.Utilities.FiltersModel;
+using Infrastructure.FiltersModel;
 
 namespace Api.Controllers;
 

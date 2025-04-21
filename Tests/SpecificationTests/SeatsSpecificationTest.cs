@@ -1,9 +1,7 @@
-using System;
 using Application.Dtos;
 using Application.Specification;
 using Infrastructure.Notifications;
-using Infrastructure.Utilities.FiltersModel;
-using Xunit;
+using Infrastructure.FiltersModel;
 
 namespace SpecificationTest;
 

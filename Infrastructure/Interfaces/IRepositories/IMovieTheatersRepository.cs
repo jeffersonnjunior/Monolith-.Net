@@ -1,5 +1,5 @@
 ﻿using Domain.Entities;
-using Infrastructure.Utilities.FiltersModel;
+using Infrastructure.FiltersModel;
 
 namespace Infrastructure.Interfaces.IRepositories;
 

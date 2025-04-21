@@ -1,7 +1,7 @@
 ﻿using Application.Dtos;
 using Application.Interfaces.IServices;
 using Infrastructure.Notifications;
-using Infrastructure.Utilities.FiltersModel;
+using Infrastructure.FiltersModel;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 

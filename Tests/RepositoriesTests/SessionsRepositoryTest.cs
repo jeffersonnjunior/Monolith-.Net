@@ -2,9 +2,8 @@ using Domain.Entities;
 using Domain.Enums;
 using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
-using Infrastructure.Utilities.FiltersModel;
+using Infrastructure.FiltersModel;
 using Moq;
-using Xunit;
 
 namespace RepositoryTest;
 

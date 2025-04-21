@@ -1,5 +1,5 @@
 ﻿using Application.Dtos;
-using Infrastructure.Utilities.FiltersModel;
+using Infrastructure.FiltersModel;
 
 namespace Application.Interfaces.IServices;
 

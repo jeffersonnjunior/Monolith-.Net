@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Utilities.FiltersModel;
+﻿namespace Infrastructure.FiltersModel;
 
 public class FilterTheaterLocationTable
 {

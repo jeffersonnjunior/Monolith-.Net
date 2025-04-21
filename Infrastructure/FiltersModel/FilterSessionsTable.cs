@@ -1,6 +1,6 @@
 using Domain.Enums;
 
-namespace Infrastructure.Utilities.FiltersModel;
+namespace Infrastructure.FiltersModel;
 
 public class FilterSessionsTable
 {

@@ -1,7 +1,7 @@
 using Application.Dtos;
 using Infrastructure.Notifications;
 using System.Reflection;
-using Infrastructure.Utilities.FiltersModel;
+using Infrastructure.FiltersModel;
 
 namespace Application.Specification;
 

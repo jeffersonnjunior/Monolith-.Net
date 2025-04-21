@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Utilities.Db;
+namespace Infrastructure.Db;
 
 public static class IncludesFunction
 {

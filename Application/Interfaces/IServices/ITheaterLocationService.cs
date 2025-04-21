@@ -1,6 +1,6 @@
 ﻿using Application.Dtos;
 using Domain.Entities;
-using Infrastructure.Utilities.FiltersModel;
+using Infrastructure.FiltersModel;
 
 namespace Application.Interfaces.IServices;
 

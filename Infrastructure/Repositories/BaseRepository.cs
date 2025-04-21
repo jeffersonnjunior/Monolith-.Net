@@ -1,11 +1,11 @@
 ﻿using Infrastructure.Context;
 using Infrastructure.Interfaces.IRepositories;
-using Infrastructure.Utilities.Db;
-using Infrastructure.Utilities.FiltersModel;
-using Infrastructure.Utilities.FunctionsDatabase;
+using Infrastructure.FiltersModel;
+using Infrastructure.FunctionsDatabase;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using System.Reflection;
+using Infrastructure.Db;
 using Infrastructure.Notifications;
 
 namespace Infrastructure.Repositories

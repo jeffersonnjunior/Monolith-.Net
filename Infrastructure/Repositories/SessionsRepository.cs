@@ -3,7 +3,7 @@ using Domain.Enums;
 using Infrastructure.Context;
 using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
-using Infrastructure.Utilities.FiltersModel;
+using Infrastructure.FiltersModel;
 
 namespace Infrastructure.Repositories;
 

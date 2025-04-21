@@ -1,13 +1,11 @@
 using Application.Dtos;
 using Application.Interfaces.IFactory;
 using Application.Services;
-using Application.Specification;
 using Domain.Entities;
 using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
-using Infrastructure.Utilities.FiltersModel;
+using Infrastructure.FiltersModel;
 using Moq;
-using Xunit;
 
 public class CustomerDetailsServiceTest
 {

@@ -2,10 +2,9 @@
 using Application.Interfaces.IFactory;
 using Application.Interfaces.IServices;
 using Application.Specification;
-using Domain.Entities;
+using Infrastructure.FiltersModel;
 using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
-using Infrastructure.Utilities.FiltersModel;
 
 namespace Application.Services;
 

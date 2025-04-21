@@ -2,10 +2,7 @@
 using Infrastructure.Context;
 using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
-using Infrastructure.Utilities.FiltersModel;
-using Infrastructure.Utilities.FunctionsDatabase;
-using System.Collections.Generic;
-using System.Linq;
+using Infrastructure.FiltersModel;
 
 namespace Infrastructure.Repositories;
 

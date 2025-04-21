@@ -1,6 +1,6 @@
 using Domain.Entities;
 
-namespace Infrastructure.Utilities.FiltersModel;
+namespace Infrastructure.FiltersModel;
 
 public class FilterScreensTable
 {

@@ -1,4 +1,4 @@
-﻿using Infrastructure.Utilities.FiltersModel;
+﻿using Infrastructure.FiltersModel;
 using System.Linq.Expressions;
 
 namespace Infrastructure.Interfaces.IRepositories;

@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
 using Application.Dtos;
 using Application.Specification;
 using Domain.Enums;
 using Infrastructure.Notifications;
-using Infrastructure.Utilities.FiltersModel;
-using Xunit;
+using Infrastructure.FiltersModel;
 
 namespace SpecificationTest;
 

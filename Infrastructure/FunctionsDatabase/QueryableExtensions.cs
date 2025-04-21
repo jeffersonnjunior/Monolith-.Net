@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
-using Infrastructure.Utilities.FiltersModel;
+using Infrastructure.FiltersModel;
 
-namespace Infrastructure.Utilities.FunctionsDatabase;
+namespace Infrastructure.FunctionsDatabase;
 
 public static class QueryableExtensions
 {

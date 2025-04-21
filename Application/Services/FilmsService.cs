@@ -5,7 +5,7 @@ using Application.Specification;
 using Domain.Entities;
 using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
-using Infrastructure.Utilities.FiltersModel;
+using Infrastructure.FiltersModel;
 
 namespace Application.Services;
 
