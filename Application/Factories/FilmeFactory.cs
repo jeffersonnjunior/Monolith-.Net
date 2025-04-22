@@ -1,9 +1,9 @@
 using Application.Dtos;
-using Application.Interfaces.IFactory;
+using Application.Interfaces.IFactories;
 using Domain.Entities;
 using Domain.Enums;
 
-namespace Application.Factory;
+namespace Application.Factories;
 
 public class FilmeFactory : IFilmeFactory
 {

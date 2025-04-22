@@ -1,5 +1,5 @@
 using Application.Dtos;
-using Application.Interfaces.IFactory;
+using Application.Interfaces.IFactories;
 using Application.Services;
 using Domain.Entities;
 using Domain.Enums;

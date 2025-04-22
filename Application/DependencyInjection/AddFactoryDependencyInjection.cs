@@ -1,5 +1,5 @@
-using Application.Factory;
-using Application.Interfaces.IFactory;
+using Application.Factories;
+using Application.Interfaces.IFactories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.DependencyInjection;

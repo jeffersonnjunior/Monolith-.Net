@@ -1,7 +1,7 @@
 using Application.Dtos;
 using Domain.Entities;
 
-namespace Application.Interfaces.IFactory;
+namespace Application.Interfaces.IFactories;
 
 public interface IScreensFactory
 {
