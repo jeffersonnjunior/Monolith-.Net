@@ -1,7 +1,6 @@
-using Api.Configurations;
-using Api.DependencyInjection;
 using Api.Filters;
 using Api.Middlewares;
+using Api.Versioning;
 using Application.DependencyInjection;
 using Infrastructure.DependencyInjection;
 
