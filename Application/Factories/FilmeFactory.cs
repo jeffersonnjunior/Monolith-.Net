@@ -51,7 +51,7 @@ public class FilmeFactory : IFilmeFactory
             Name = string.Empty,
             Duration = 0,
             AgeRange = 0,
-            FilmGenres = FilmGenres.Action // Valor padrão
+            FilmGenres = FilmGenres.Action
         };
     }
 
