@@ -1,5 +1,5 @@
 ﻿using Infrastructure.Cache.Connection;
-using Infrastructure.Interfaces.ICacheServices;
+using Infrastructure.Interfaces.ICache.IServices;
 using StackExchange.Redis;
 
 namespace Infrastructure.Cache.Services;
