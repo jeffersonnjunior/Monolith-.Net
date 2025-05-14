@@ -12,17 +12,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 9.0.x
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore ClinicaFacil.sln
 
-    - name: Build project
-      run: dotnet build --no-restore
+    - name: Build solution
+      run: dotnet build ClinicaFacil.sln --no-restore
 
   test:
     runs-on: ubuntu-latest
@@ -37,7 +37,7 @@ jobs:
         dotnet-version: 9.0.x
 
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore Monolith-.Net.sln
 
     - name: Run tests
       run: dotnet test Tests/Tests.csproj --verbosity normal
