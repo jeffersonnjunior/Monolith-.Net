@@ -17,6 +17,18 @@ services:
       timeout: 5s
       retries: 10
 
+  redis:
+    image: redis:7.2-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   migrator:
     build:
       context: .
@@ -43,9 +55,13 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: "User ID=postgres;Password=root;Server=postgres;Port=5432;Database=movietheater;Pooling=true;"
+      ConnectionStrings__Redis: "redis:6379"
 
 volumes:
   pg_data:
+  redis_data:  
