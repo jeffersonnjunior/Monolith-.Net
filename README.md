@@ -59,6 +59,8 @@ Fornece listas de valores fixos usados para categorizar e organizar informaçõe
 
 ## Camada Infrastructure
 
+### Cache
+
 ### Context  
 Define o contexto de banco de dados, responsável pela comunicação com o armazenamento e o mapeamento das entidades.
 
