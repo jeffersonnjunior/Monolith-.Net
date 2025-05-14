@@ -25,14 +25,14 @@ public class FilmsController : Controller
     
     [HttpGet]
     [Route("get-by-id")]
-    public IActionResult GetById(FilterFilmsById filterFilmsById)
+    public IActionResult GetById([FromQuery] FilterFilmsById filterFilmsById)
     {
         return Ok(_filmService.GetById(filterFilmsById));
     }
     
     [HttpGet]
     [Route("get-filter")]
-    public IActionResult GetFilter(FilterFilmsTable filter)
+    public IActionResult GetFilter([FromQuery] FilterFilmsTable filter)
     {
         return Ok(_filmService.GetFilter(filter));
     }
