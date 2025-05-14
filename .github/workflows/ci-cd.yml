@@ -49,8 +49,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up Docker Compose
-      run: docker-compose version
+    - name: Check Docker Compose version
+      run: docker compose version
 
     - name: Build containers with Docker Compose
-      run: docker-compose -f docker-compose.yml build
+      run: docker compose -f docker-compose.yml build
