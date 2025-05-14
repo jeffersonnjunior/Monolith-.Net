@@ -3,9 +3,30 @@ using Api.Middlewares;
 using Api.Versioning;
 using Application.DependencyInjection;
 using Infrastructure.DependencyInjection;
+;
 
 var builder = WebApplication.CreateBuilder(args);
 IConfiguration configuration = builder.Configuration;
+
+bool isRunningInContainer = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER") == "true";
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    if (isRunningInContainer)
+    {
+
+        options.ListenAnyIP(5000);
+    }
+    else
+    {
+
+        options.ListenAnyIP(5001, listenOptions =>
+        {
+            listenOptions.UseHttps();
+        });
+    }
+});
+
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerConfiguration();
@@ -20,11 +41,17 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwaggerConfiguration();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseCustomCors();
-app.UseHttpsRedirection();
+
+if (!isRunningInContainer)
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
