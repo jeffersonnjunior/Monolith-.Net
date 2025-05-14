@@ -19,10 +19,10 @@ jobs:
         dotnet-version: 9.0.x
 
     - name: Restore dependencies
-      run: dotnet restore ClinicaFacil.sln
+      run: dotnet restore Monolith-.Net.sln
 
     - name: Build solution
-      run: dotnet build ClinicaFacil.sln --no-restore
+      run: dotnet build Monolith-.Net.sln --no-restore
 
   test:
     runs-on: ubuntu-latest
