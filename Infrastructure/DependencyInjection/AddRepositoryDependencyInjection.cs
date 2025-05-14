@@ -17,6 +17,5 @@ public static class AddRepositoryDependencyInjection
         repository.AddScoped<ITheaterLocationRepository, TheaterLocationRepository>();
         repository.AddScoped<ITicketsRepository, TicketsRepository>();
         repository.AddScoped<IUnitOfWork, UnitOfWork>();
-
     }
 }
