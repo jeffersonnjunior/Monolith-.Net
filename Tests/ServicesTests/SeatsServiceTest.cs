@@ -6,11 +6,15 @@ using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
 using Infrastructure.FiltersModel;
 using Moq;
+using Infrastructure.Interfaces.ICache.IServices;
+
+namespace Tests.ServicesTests;
 
 public class SeatsServiceTests
 {
     private readonly Mock<ISeatsRepository> _seatsRepositoryMock;
     private readonly Mock<ISeatsFactory> _seatsFactoryMock;
+    private readonly Mock<ICacheService> _cacheServiceMock;
     private readonly NotificationContext _notificationContext;
     private readonly SeatsService _seatsService;
 
@@ -18,11 +22,13 @@ public class SeatsServiceTests
     {
         _seatsRepositoryMock = new Mock<ISeatsRepository>();
         _seatsFactoryMock = new Mock<ISeatsFactory>();
+        _cacheServiceMock = new Mock<ICacheService>();
         _notificationContext = new NotificationContext();
         _seatsService = new SeatsService(
             _seatsRepositoryMock.Object,
-            _notificationContext,
-            _seatsFactoryMock.Object
+            _seatsFactoryMock.Object,
+            _cacheServiceMock.Object,
+            _notificationContext
         );
     }
 

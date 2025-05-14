@@ -6,11 +6,14 @@ using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
 using Infrastructure.FiltersModel;
 using Moq;
+using Infrastructure.Interfaces.ICache.IServices;
 
+namespace Tests.ServicesTests;
 public class TheaterLocationServiceTests
 {
     private readonly Mock<ITheaterLocationRepository> _theaterLocationRepositoryMock;
     private readonly Mock<ITheaterLocationFactory> _theaterLocationFactoryMock;
+    private readonly Mock<ICacheService> _cacheServiceMock;
     private readonly NotificationContext _notificationContext;
     private readonly TheaterLocationService _theaterLocationService;
 
@@ -18,11 +21,13 @@ public class TheaterLocationServiceTests
     {
         _theaterLocationRepositoryMock = new Mock<ITheaterLocationRepository>();
         _theaterLocationFactoryMock = new Mock<ITheaterLocationFactory>();
+        _cacheServiceMock = new Mock<ICacheService>();
         _notificationContext = new NotificationContext();
         _theaterLocationService = new TheaterLocationService(
             _theaterLocationRepositoryMock.Object,
-            _notificationContext,
-            _theaterLocationFactoryMock.Object
+            _theaterLocationFactoryMock.Object,
+            _cacheServiceMock.Object,
+            _notificationContext
         );
     }
 

@@ -6,11 +6,14 @@ using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
 using Infrastructure.FiltersModel;
 using Moq;
+using Infrastructure.Interfaces.ICache.IServices;
 
+namespace Tests.ServicesTests;
 public class TicketsServiceTests
 {
     private readonly Mock<ITicketsRepository> _ticketsRepositoryMock;
     private readonly Mock<ITicketsFactory> _ticketsFactoryMock;
+    private readonly Mock<ICacheService> _cacheServiceMock;
     private readonly NotificationContext _notificationContext;
     private readonly TicketsService _ticketsService;
 
@@ -18,11 +21,13 @@ public class TicketsServiceTests
     {
         _ticketsRepositoryMock = new Mock<ITicketsRepository>();
         _ticketsFactoryMock = new Mock<ITicketsFactory>();
+        _cacheServiceMock = new Mock<ICacheService>();
         _notificationContext = new NotificationContext();
         _ticketsService = new TicketsService(
             _ticketsRepositoryMock.Object,
-            _notificationContext,
-            _ticketsFactoryMock.Object
+            _ticketsFactoryMock.Object,
+            _cacheServiceMock.Object,
+            _notificationContext
         );
     }
 

@@ -6,11 +6,15 @@ using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
 using Infrastructure.FiltersModel;
 using Moq;
+using Infrastructure.Interfaces.ICache.IServices;
+
+namespace Tests.ServicesTests;
 
 public class CustomerDetailsServiceTest
 {
     private readonly Mock<ICustomerDetailsRepository> _customerDetailsRepositoryMock;
     private readonly Mock<ICustomerDetailsFactory> _customerDetailsFactoryMock;
+    private readonly Mock<ICacheService> _cacheServiceMock;
     private readonly Mock<NotificationContext> _notificationContextMock;
     private readonly CustomerDetailsService _customerDetailsService;
 
@@ -18,10 +22,12 @@ public class CustomerDetailsServiceTest
     {
         _customerDetailsRepositoryMock = new Mock<ICustomerDetailsRepository>();
         _customerDetailsFactoryMock = new Mock<ICustomerDetailsFactory>();
+        _cacheServiceMock = new Mock<ICacheService>();
         _notificationContextMock = new Mock<NotificationContext>();
         _customerDetailsService = new CustomerDetailsService(
             _customerDetailsRepositoryMock.Object,
             _customerDetailsFactoryMock.Object,
+            _cacheServiceMock.Object,
             _notificationContextMock.Object
         );
     }

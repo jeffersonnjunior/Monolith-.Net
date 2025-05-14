@@ -7,11 +7,14 @@ using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
 using Infrastructure.FiltersModel;
 using Moq;
+using Infrastructure.Interfaces.ICache.IServices;
 
+namespace Tests.ServicesTests;
 public class FilmsServiceTest
 {
     private readonly Mock<IFilmsRepository> _filmsRepositoryMock;
     private readonly Mock<IFilmeFactory> _filmeFactoryMock;
+    private readonly Mock<ICacheService> _cacheServiceMock;
     private readonly Mock<NotificationContext> _notificationContextMock;
     private readonly FilmsService _filmsService;
 
@@ -19,11 +22,13 @@ public class FilmsServiceTest
     {
         _filmsRepositoryMock = new Mock<IFilmsRepository>();
         _filmeFactoryMock = new Mock<IFilmeFactory>();
+        _cacheServiceMock = new Mock<ICacheService>();
         _notificationContextMock = new Mock<NotificationContext>();
         _filmsService = new FilmsService(
             _filmsRepositoryMock.Object,
-            _notificationContextMock.Object,
-            _filmeFactoryMock.Object
+            _filmeFactoryMock.Object,
+            _cacheServiceMock.Object,
+            _notificationContextMock.Object
         );
     }
 

@@ -7,11 +7,14 @@ using Infrastructure.Interfaces.IRepositories;
 using Infrastructure.Notifications;
 using Infrastructure.FiltersModel;
 using Moq;
+using Infrastructure.Interfaces.ICache.IServices;
 
+namespace Tests.ServicesTests;
 public class SessionsServiceTests
 {
     private readonly Mock<ISessionsRepository> _sessionsRepositoryMock;
     private readonly Mock<ISessionsFactory> _sessionsFactoryMock;
+    private readonly Mock<ICacheService> _cacheServiceMock;
     private readonly NotificationContext _notificationContext;
     private readonly SessionsService _sessionsService;
 
@@ -19,11 +22,13 @@ public class SessionsServiceTests
     {
         _sessionsRepositoryMock = new Mock<ISessionsRepository>();
         _sessionsFactoryMock = new Mock<ISessionsFactory>();
+        _cacheServiceMock = new Mock<ICacheService>();
         _notificationContext = new NotificationContext();
         _sessionsService = new SessionsService(
             _sessionsRepositoryMock.Object,
-            _notificationContext,
-            _sessionsFactoryMock.Object
+            _sessionsFactoryMock.Object,
+            _cacheServiceMock.Object,
+            _notificationContext
         );
     }
 
