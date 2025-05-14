@@ -49,7 +49,7 @@ public class ScreensController : Controller
 
     [HttpPost]
     [Route("update")]
-    public IActionResult Update([FromQuery] ScreensUpdateDto screensUpdateDto)
+    public IActionResult Update([FromBody] ScreensUpdateDto screensUpdateDto)
     {
         _screensService.Update(screensUpdateDto);
         return Ok();

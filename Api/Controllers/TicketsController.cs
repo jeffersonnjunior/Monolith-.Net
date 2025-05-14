@@ -24,7 +24,7 @@ public class TicketsController : Controller
     
     [HttpGet]
     [Route("get-by-id")]
-    public IActionResult GetById(FilterTicketsById filterTicketsById)
+    public IActionResult GetById([FromQuery] FilterTicketsById filterTicketsById)
     {
         return Ok(_ticketsService.GetById(filterTicketsById));
     }
