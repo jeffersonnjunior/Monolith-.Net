@@ -31,7 +31,7 @@ services:
       echo '⏳ Aguardando PostgreSQL ficar disponível...';
       until pg_isready -h postgres -U postgres -d movietheater; do sleep 2; done;
       echo '🛠️ Aplicando migrations...';
-      dotnet ef database update --project Infrastructure --startup-project Api --verbose
+      dotnet ef database update --project ../Infrastructure --startup-project .
       "
 
   api:
