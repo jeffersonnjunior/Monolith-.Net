@@ -61,6 +61,7 @@ Fornece listas de valores fixos usados para categorizar e organizar informaçõe
 
 ### Cache
 
+
 ### Context  
 Define o contexto de banco de dados, responsável pela comunicação com o armazenamento e o mapeamento das entidades.
 
@@ -107,3 +108,4 @@ Para subir a aplicação com Docker Compose, execute o comando abaixo na raiz do
 ```bash
 docker-compose up
 
+<pre><code>```mermaid graph TD A[🎯 Controller] --> B[📐 Specification] B --> C[🧠 Service] C --> D[🗄️ Repository] ```</code></pre>
