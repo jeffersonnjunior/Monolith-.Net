@@ -104,9 +104,9 @@ Contém as configurações para os pipelines de CI/CD do projeto, automatizando 
 
 ```mermaid
 graph TD
-    A[ Controller] --> B[📐 Specification]
+    A[ Controller] --> B[ Specification]
     B --> C[ Service]
-    C --> D[🗄 Repository]
+    C --> D[ Repository]
 
 ```
 
