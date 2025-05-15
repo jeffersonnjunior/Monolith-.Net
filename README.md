@@ -109,7 +109,6 @@ graph TD
     B -- Válido --> C[Service<br/>(Consulta Cache)]
     C -- Cache Hit --> F[Retorna dados do Cache]
     C -- Cache Miss --> D[Repository<br/>(Consulta ao banco)]
-
 ```
 
 Para subir a aplicação com Docker Compose, execute o comando abaixo na raiz do projeto:
