@@ -100,6 +100,11 @@ Contém as configurações para os pipelines de CI/CD do projeto, automatizando 
 ## Diagrama do Banco
 ![__EFMigrationsHistory](https://github.com/user-attachments/assets/c64e1ed6-cdba-4dd0-bf70-2fefad897c8d)
 
+Para subir a aplicação com Docker Compose, execute o comando abaixo na raiz do projeto:
+
+```bash
+docker-compose up
+```
 
 ## Diagrama da Requisição
 
@@ -108,10 +113,3 @@ graph TD
     A[🎯 Controller] --> B[📐 Specification]
     B --> C[🧠 Service]
     C --> D[🗄️ Repository]
-
-## Rodar Projeto
-
-Para subir a aplicação com Docker Compose, execute o comando abaixo na raiz do projeto:
-
-```bash
-docker-compose up
