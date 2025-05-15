@@ -60,7 +60,7 @@ Fornece listas de valores fixos usados para categorizar e organizar informaçõe
 ## Camada Infrastructure
 
 ### Cache  
-Gerencia o armazenamento temporário de dados frequentemente acessados, melhorando a performance da aplicação ao reduzir o número de acessos ao banco de dados.
+Gerencia o armazenamento temporário de dados, melhorando a performance da aplicação ao reduzir o número de acessos ao banco de dados.
 
 ### Context  
 Define o contexto de banco de dados, responsável pela comunicação com o armazenamento e o mapeamento das entidades.
