@@ -7,7 +7,7 @@ Projeto para gerenciamento de cinema, com funcionalidades como compra de ingress
 - C#, ASP.NET Core, PostgreSQL, Redis, Entity Framework, xUnit e Docker
 
 ## Padrões de Design
-- DDD, SOLID, Factory e Notification  
+- SOLID, Factory e Notification  
 
 ## Arquitetura
 Monolítica com Clean Architecture, garantindo modularidade e separação de responsabilidades.
