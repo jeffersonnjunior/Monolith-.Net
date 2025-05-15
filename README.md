@@ -103,7 +103,11 @@ Contém as configurações para os pipelines de CI/CD do projeto, automatizando 
 
 ## Diagrama da Requisição
 
-<pre><code>```mermaid graph TD A[🎯 Controller] --> B[📐 Specification] B --> C[🧠 Service] C --> D[🗄️ Repository] ```</code></pre>
+```mermaid
+graph TD
+    A[🎯 Controller] --> B[📐 Specification]
+    B --> C[🧠 Service]
+    C --> D[🗄️ Repository]
 
 ## Rodar Projeto
 
