@@ -104,9 +104,11 @@ Contém as configurações para os pipelines de CI/CD do projeto, automatizando 
 
 ```mermaid
 graph TD
-    A[ Controller] --> B[ Specification]
-    B --> C[ Service]
-    C --> D[ Repository]
+    A[Controller] --> B{Specification<br/>(Validação)}
+    B -- Inválido --> E[Retorna Erro / Rejeita Fluxo]
+    B -- Válido --> C[Service<br/>(Consulta Cache)]
+    C -- Cache Hit --> F[Retorna dados do Cache]
+    C -- Cache Miss --> D[Repository<br/>(Consulta ao banco)]
 
 ```
 
