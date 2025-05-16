@@ -3,7 +3,6 @@ using Api.Middlewares;
 using Api.Versioning;
 using Application.DependencyInjection;
 using Infrastructure.DependencyInjection;
-;
 
 var builder = WebApplication.CreateBuilder(args);
 IConfiguration configuration = builder.Configuration;
