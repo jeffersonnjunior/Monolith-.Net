@@ -7,10 +7,10 @@ Projeto para gerenciamento de cinema, com funcionalidades como compra de ingress
 - C#, ASP.NET Core, PostgreSQL, Redis, Entity Framework, xUnit e Docker
 
 ## Padrões de Design
-- DDD, SOLID, Factory e Notification  
+- SOLID, Factory e Notification  
 
 ## Arquitetura
-Monolítica com Clean Architecture, garantindo modularidade e separação de responsabilidades.
+Monolito com Clean Architecture, garantindo modularidade e separação de responsabilidades.
 
 # Separação do Projeto
 
@@ -59,7 +59,8 @@ Fornece listas de valores fixos usados para categorizar e organizar informaçõe
 
 ## Camada Infrastructure
 
-### Cache
+### Cache  
+Gerencia o armazenamento temporário de dados, melhorando a performance da aplicação ao reduzir o número de acessos ao banco de dados.
 
 ### Context  
 Define o contexto de banco de dados, responsável pela comunicação com o armazenamento e o mapeamento das entidades.
@@ -99,11 +100,20 @@ Contém as configurações para os pipelines de CI/CD do projeto, automatizando 
 ## Diagrama do Banco
 ![__EFMigrationsHistory](https://github.com/user-attachments/assets/c64e1ed6-cdba-4dd0-bf70-2fefad897c8d)
 
+## Diagrama da Requisição
 
-## Rodar Projeto
+```mermaid
+graph TD
+    A[Controller] --> B{Validação}
+    B -- Exceção --> E[Lança exceção]
+    B -- Válido --> C[Service verifica cache]
+    C -- Cache encontrado --> F[Retorna dados do cache]
+    C -- Cache não encontrado --> D[Repository consulta banco]
+
+```
 
 Para subir a aplicação com Docker Compose, execute o comando abaixo na raiz do projeto:
 
 ```bash
 docker-compose up
-
+```
