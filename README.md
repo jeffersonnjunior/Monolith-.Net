@@ -10,7 +10,7 @@ Projeto para gerenciamento de cinema, com funcionalidades como compra de ingress
 - SOLID, Factory e Notification  
 
 ## Arquitetura
-Monolítica com Clean Architecture, garantindo modularidade e separação de responsabilidades.
+Monolito com Clean Architecture, garantindo modularidade e separação de responsabilidades.
 
 # Separação do Projeto
 
