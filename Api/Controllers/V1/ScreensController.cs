@@ -5,7 +5,7 @@ using Infrastructure.FiltersModel;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Controllers;
+namespace Api.Controllers.V1;
 
 [ApiController]
 [ApiVersion("1.0")]

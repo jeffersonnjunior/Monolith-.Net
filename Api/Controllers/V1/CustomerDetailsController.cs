@@ -4,7 +4,7 @@ using Infrastructure.Notifications;
 using Microsoft.AspNetCore.Mvc;
 using Infrastructure.FiltersModel;
 
-namespace Api.Controllers;
+namespace Api.Controllers.V1;
 
 [ApiController]
 [ApiVersion("1.0")]
