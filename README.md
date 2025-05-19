@@ -112,6 +112,7 @@ graph TD
 
 ```
 
+## Rodar Projeto
 Para subir a aplicação com Docker Compose, execute o comando abaixo na raiz do projeto:
 
 ```bash
