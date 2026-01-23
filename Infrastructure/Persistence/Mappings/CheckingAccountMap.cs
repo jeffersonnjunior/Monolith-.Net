@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Persistence.Mappings;
 
-internal sealed class CheckingAccountMapping : IEntityTypeConfiguration<CheckingAccount>
+internal sealed class CheckingAccountMap : IEntityTypeConfiguration<CheckingAccount>
 {
     public void Configure(EntityTypeBuilder<CheckingAccount> builder)
     {

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Persistence.Mappings;
 
-internal sealed class InstallmentMapping : IEntityTypeConfiguration<Installment>
+internal sealed class InstallmentMap : IEntityTypeConfiguration<Installment>
 {
     public void Configure(EntityTypeBuilder<Installment> builder)
     {
