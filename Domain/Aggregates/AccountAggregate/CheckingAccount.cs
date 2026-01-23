@@ -1,4 +1,6 @@
-﻿namespace MyBank.Core.Aggregates.AccountAggregate;
+﻿using Domain.Exceptions;
+
+namespace Domain.Aggregates.AccountAggregate;
 
 public class CheckingAccount
 {
