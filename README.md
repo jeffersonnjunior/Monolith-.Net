@@ -119,4 +119,4 @@ Para subir a aplicação com Docker Compose, execute o comando abaixo na raiz do
 docker-compose up
 ```
 
-Esse projeto é o primerio de três projetos
+Esse projeto é o primerio de três projetos, sobre arquitetura de software
