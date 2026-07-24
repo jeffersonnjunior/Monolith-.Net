@@ -1,4 +1,4 @@
-# Documentação do Projeto
+# Documentação do Projeto - Descontinuado 
 
 ## Regra de Negócio
 Projeto para gerenciamento de cinema, com funcionalidades como compra de ingressos e gestão de salas, incluindo organização de assentos e sessões de filmes.
